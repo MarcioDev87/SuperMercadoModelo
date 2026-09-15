@@ -7,15 +7,17 @@
 - Renderização de dados dinâmicos protegida contra injeção de HTML.
 - Catálogo inicial separado dos dados de usuários e pedidos.
 - Imagem Docker executada como usuário sem privilégios, com sistema de arquivos somente leitura e volume persistente.
-- APK debug gerado com o ícone fornecido e apontando para o servidor local.
+- APKs de teste distintos para Cliente e Gestor, com IDs Android instaláveis em paralelo e apontando para HTTPS.
 - Venda piloto registrada e preservada após reinício do contêiner.
 - Testes automatizados, verificação de sintaxe e auditoria das dependências de produção aprovados.
+- Aplicação publicada em `https://modelo.flawlessdev.com.br` por Cloudflare Tunnel.
+- Porta interna do Node restrita à rede Docker e banco preservado com backup anterior à implantação.
+- Login real de Cliente e Gestor, catálogo, painel e downloads dos APKs validados no domínio público.
 
-## Antes de publicar na Internet
+## Antes da distribuição definitiva
 
-- Definir domínio e HTTPS no proxy reverso da VPS; não publicar a porta interna do Node diretamente.
-- Preencher telefone, endereço, senha administrativa forte e segredos exclusivos no `.env` da VPS.
-- Gerar outro APK apontando para a URL HTTPS pública e assinar uma versão Android release.
+- Preencher telefone, endereço e demais dados definitivos da loja.
+- Assinar uma versão Android release com chave de produção protegida.
 - Testar instalação e fluxo completo em um aparelho físico; nenhum dispositivo ADB estava conectado nesta validação.
 - Configurar backups automáticos do volume SQLite, monitoramento e restauração ensaiada.
 - Configurar e validar a integração real do WhatsApp antes de habilitar notificações.
@@ -25,5 +27,5 @@
 
 ## Limites do teste atual
 
-- O contêiner foi validado nesta máquina e está preparado para VPS, mas o envio remoto depende do endereço e do acesso à VPS.
-- A venda `MOD-78253F74DF` é um pedido piloto marcado para não separação nem entrega.
+- Os APKs públicos são versões debug destinadas aos testes operacionais atuais.
+- Os pedidos existentes na VPS devem ser tratados como dados de homologação até a confirmação da loja.

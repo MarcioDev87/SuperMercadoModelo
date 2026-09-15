@@ -2,6 +2,14 @@
 
 Loja virtual e painel operacional para catálogo, estoque e pedidos do Super Mercado Modelo.
 
+## Produção
+
+- Loja: `https://modelo.flawlessdev.com.br/`
+- Login do cliente: `https://modelo.flawlessdev.com.br/login_cliente.html`
+- Login do gestor: `https://modelo.flawlessdev.com.br/login_gestor.html`
+- APK Cliente: `https://modelo.flawlessdev.com.br/downloads/SuperMercadoModelo-Cliente.apk`
+- APK Gestor: `https://modelo.flawlessdev.com.br/downloads/SuperMercadoModelo-Gestor.apk`
+
 ## Requisitos
 
 - Node.js 22 para desenvolvimento local.
