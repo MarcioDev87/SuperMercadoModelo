@@ -188,7 +188,7 @@
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
           <input type="text" id="admin-search-input" placeholder="Buscar por nome, categoria ou código..." class="w-full h-10 pl-10 pr-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 shadow-xs">
         </div>
-        <select id="admin-cat-filter" onchange="loadAdminProducts()" class="h-11 px-3 rounded-xl bg-surface-800 border border-surface-700 text-xs text-white focus:outline-none focus:border-brand-green w-full sm:w-48">
+        <select id="admin-cat-filter" onchange="loadAdminProducts()" class="h-10 px-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-emerald-600 w-full sm:w-48 shadow-xs">
           <option value="">Todas as Categorias</option>
           <option value="Hortifruti">Hortifruti</option>
           <option value="Açougue">Açougue</option>
@@ -202,7 +202,7 @@
 
       <!-- Products Table -->
       <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
-        <table class="w-full text-left text-xs text-slate-300">
+        <table class="w-full text-left text-xs text-slate-700">
           <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold border-b border-slate-200">
             <tr>
               <th class="p-3">Foto</th>
@@ -251,22 +251,22 @@
           const safeImg = p.img || 'https://via.placeholder.com/100?text=Modelo';
 
           return `
-            <tr class="hover:bg-surface-700/40 transition">
+            <tr class="hover:bg-slate-50 transition">
               <td class="p-3">
-                <div class="w-10 h-10 rounded-lg bg-surface-900 p-1 border border-surface-700 flex items-center justify-center">
+                <div class="w-10 h-10 rounded-xl bg-slate-50 p-1 border border-slate-200 flex items-center justify-center overflow-hidden">
                   <img src="${safeImg}" alt="${p.name}" class="h-full w-full object-contain">
                 </div>
               </td>
               <td class="p-3">
-                <span class="font-bold text-white block">${p.name}</span>
+                <span class="font-bold text-slate-900 block">${p.name}</span>
                 <span class="text-[10px] text-slate-400">Unidade: ${p.unit || 'un'}</span>
               </td>
               <td class="p-3 font-semibold text-brand-orange">${p.category || 'Geral'}</td>
-              <td class="p-3 font-extrabold text-brand-greenLight">R$ ${price.toFixed(2).replace('.', ',')}</td>
+              <td class="p-3 font-extrabold text-emerald-700">R$ ${price.toFixed(2).replace('.', ',')}</td>
               <td class="p-3 text-slate-400">${oldPrice ? `R$ ${oldPrice.toFixed(2).replace('.', ',')}` : '-'}</td>
-              <td class="p-3 font-bold text-white">${p.stock_quantity ?? 50}</td>
+              <td class="p-3 font-bold text-slate-800">${p.stock !== undefined ? p.stock : (p.stock_quantity ?? 50)}</td>
               <td class="p-3 text-right space-x-2">
-                <button onclick="editProduct('${p.id}')" class="p-1.5 rounded-lg bg-surface-700 hover:bg-brand-green text-slate-300 hover:text-white transition">
+                <button onclick="editProduct('${p.id}')" class="p-2 rounded-xl bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-600 transition shadow-xs">
                   <span class="material-symbols-outlined text-base">edit</span>
                 </button>
               </td>

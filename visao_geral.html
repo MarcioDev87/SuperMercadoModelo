@@ -183,7 +183,7 @@
           <span class="text-xs font-bold text-slate-900 block" id="admin-user-name">Gestor Modelo</span>
           <span class="text-[10px] text-brand-orange font-semibold">Administrador Oficial</span>
         </div>
-        <div class="w-9 h-9 rounded-xl bg-brand-green text-slate-900 flex items-center justify-center font-heading font-black text-sm">
+        <div class="w-9 h-9 rounded-xl bg-emerald-700 text-white flex items-center justify-center font-heading font-black text-sm shadow-xs">
           M
         </div>
       </div>
@@ -197,7 +197,7 @@
         
         <!-- Total Orders -->
         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-brand-green/20 text-brand-greenLight flex items-center justify-center">
+          <div class="w-12 h-12 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 flex items-center justify-center">
             <span class="material-symbols-outlined text-2xl">receipt_long</span>
           </div>
           <div>
@@ -208,7 +208,7 @@
 
         <!-- Total Revenue -->
         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-brand-orange/20 text-brand-orange flex items-center justify-center">
+          <div class="w-12 h-12 rounded-xl bg-orange-50 text-brand-orange border border-orange-200 flex items-center justify-center">
             <span class="material-symbols-outlined text-2xl">payments</span>
           </div>
           <div>
@@ -219,7 +219,7 @@
 
         <!-- Low Stock Items -->
         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-brand-yellow flex items-center justify-center">
+          <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-700 border border-amber-200 flex items-center justify-center">
             <span class="material-symbols-outlined text-2xl">warning</span>
           </div>
           <div>
@@ -230,7 +230,7 @@
 
         <!-- Active Products -->
         <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow flex items-center gap-4">
-          <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+          <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 flex items-center justify-center">
             <span class="material-symbols-outlined text-2xl">inventory_2</span>
           </div>
           <div>
@@ -243,19 +243,19 @@
 
       <!-- Quick Action Buttons -->
       <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
-        <a href="admin_produtos.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-brand-green flex items-center gap-3 transition">
-          <span class="material-symbols-outlined text-brand-greenLight text-xl">add_circle</span>
+        <a href="admin_produtos.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-600 hover:bg-emerald-50/30 shadow-xs flex items-center gap-3 transition">
+          <span class="material-symbols-outlined text-emerald-700 text-xl">add_circle</span>
           <span class="text-xs font-bold text-slate-900">Novo Produto</span>
         </a>
-        <a href="lista_de_pedidos.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-brand-orange flex items-center gap-3 transition">
+        <a href="lista_de_pedidos.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-orange-500 hover:bg-orange-50/30 shadow-xs flex items-center gap-3 transition">
           <span class="material-symbols-outlined text-brand-orange text-xl">pending_actions</span>
           <span class="text-xs font-bold text-slate-900">Gerenciar Pedidos</span>
         </a>
-        <a href="gestao_de_estoque.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-brand-yellow flex items-center gap-3 transition">
+        <a href="gestao_de_estoque.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-amber-500 hover:bg-amber-50/30 shadow-xs flex items-center gap-3 transition">
           <span class="material-symbols-outlined text-brand-yellow text-xl">warehouse</span>
           <span class="text-xs font-bold text-slate-900">Ajustar Estoque</span>
         </a>
-        <a href="admin_whatsapp.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-green-400 flex items-center gap-3 transition">
+        <a href="admin_whatsapp.html" class="p-3.5 rounded-2xl bg-white border border-slate-200 hover:border-emerald-500 hover:bg-emerald-50/30 shadow-xs flex items-center gap-3 transition">
           <span class="material-symbols-outlined text-green-400 text-xl">chat</span>
           <span class="text-xs font-bold text-slate-900">Notificações WhatsApp</span>
         </a>
@@ -276,7 +276,7 @@
 
         <div class="overflow-x-auto">
           <table class="w-full text-left text-xs text-slate-600">
-            <thead class="bg-slate-50 text-slate-400 uppercase text-[10px] font-bold">
+            <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold border-b border-slate-200">
               <tr>
                 <th class="p-3 rounded-l-xl">Código</th>
                 <th class="p-3">Cliente</th>
@@ -286,7 +286,7 @@
                 <th class="p-3 rounded-r-xl text-right">Ação</th>
               </tr>
             </thead>
-            <tbody id="recent-orders-tbody" class="divide-y divide-surface-700/60 font-medium">
+            <tbody id="recent-orders-tbody" class="divide-y divide-slate-200 font-medium">
               <tr>
                 <td colspan="6" class="p-6 text-center text-slate-400">Carregando pedidos...</td>
               </tr>
@@ -360,32 +360,39 @@
       }
 
       kpiOrders.innerText = orders.length;
-      const totalRev = orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
+      const totalRev = orders.reduce((sum, o) => sum + (Number(o.total_amount || o.total) || 0), 0);
       kpiRev.innerText = `R$ ${totalRev.toFixed(2).replace('.', ',')}`;
 
       const recent = orders.slice(0, 8);
       tbody.innerHTML = recent.map(o => {
-        const total = Number(o.total_amount) || 0;
-        let badgeColor = 'bg-amber-500/20 text-brand-yellow';
-        if (o.status === 'ENTREGUE') badgeColor = 'bg-brand-green/20 text-brand-greenLight';
-        if (o.status === 'CANCELADO') badgeColor = 'bg-red-500/20 text-brand-red';
+        const total = Number(o.total_amount || o.total) || 0;
+        const st = (o.status || 'recebido').toLowerCase();
+        
+        let badgeColor = 'bg-blue-50 text-blue-700 border-blue-200';
+        if (st === 'entregue' || st === 'finalizado') badgeColor = 'bg-emerald-50 text-emerald-700 border-emerald-200';
+        else if (st === 'cancelado') badgeColor = 'bg-red-50 text-red-700 border-red-200';
+        else if (st === 'separacao' || st === 'em_separacao') badgeColor = 'bg-amber-50 text-amber-800 border-amber-200';
+        else if (st === 'substituicao' || st === 'aguardando_substituicao') badgeColor = 'bg-orange-50 text-orange-800 border-orange-200';
+        else if (st === 'pronto') badgeColor = 'bg-purple-50 text-purple-700 border-purple-200';
+        else if (st === 'entrega' || st === 'saiu_entrega') badgeColor = 'bg-sky-50 text-sky-700 border-sky-200';
+        else if (st === 'confirmado') badgeColor = 'bg-indigo-50 text-indigo-700 border-indigo-200';
 
         return `
-          <tr class="hover:bg-surface-700/40 transition">
-            <td class="p-3 font-heading font-bold text-slate-900">${o.order_number}</td>
+          <tr class="hover:bg-slate-50 transition">
+            <td class="p-3 font-heading font-black text-slate-900">${o.order_number || '#' + o.id}</td>
             <td class="p-3">
               <span class="font-bold text-slate-900 block">${o.customer_name || 'Cliente'}</span>
               <span class="text-[10px] text-slate-400">${o.customer_phone || ''}</span>
             </td>
-            <td class="p-3 font-bold text-brand-greenLight">R$ ${total.toFixed(2).replace('.', ',')}</td>
-            <td class="p-3 font-semibold text-slate-600">${o.payment_method}</td>
+            <td class="p-3 font-extrabold text-emerald-700">R$ ${total.toFixed(2).replace('.', ',')}</td>
+            <td class="p-3 font-semibold text-slate-600">${o.payment_method || 'PIX'}</td>
             <td class="p-3">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${badgeColor}">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase border ${badgeColor}">
                 ${o.status}
               </span>
             </td>
             <td class="p-3 text-right">
-              <a href="lista_de_pedidos.html" class="px-2.5 py-1.5 rounded-lg bg-surface-700 hover:bg-brand-green text-slate-900 font-bold text-[11px] transition">
+              <a href="lista_de_pedidos.html" class="inline-flex items-center px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 font-bold text-xs transition shadow-xs">
                 Detalhes
               </a>
             </td>
