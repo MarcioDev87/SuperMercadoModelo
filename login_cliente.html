@@ -146,7 +146,10 @@
         const data = await res.json();
         if (res.ok && data.success) {
           localStorage.setItem('userToken', data.token);
+          localStorage.setItem('customerToken', data.token);
+          localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('customerUser', JSON.stringify(data.user));
           localStorage.setItem('isLoggedIn', 'true');
           window.location.href = 'index.html';
         } else {
@@ -178,7 +181,10 @@
         const data = await res.json();
         if (res.ok && data.success) {
           localStorage.setItem('userToken', data.token);
+          localStorage.setItem('customerToken', data.token);
+          localStorage.setItem('token', data.token);
           localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('customerUser', JSON.stringify(data.user));
           localStorage.setItem('isLoggedIn', 'true');
           alert('🎉 Cadastro realizado com sucesso no Super Mercado Modelo!');
           window.location.href = 'index.html';

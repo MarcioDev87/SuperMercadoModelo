@@ -44,8 +44,8 @@ async function loginManager(req, res) {
 }
 
 async function loginCustomer(req, res) {
-  const { email, phone, password } = req.body;
-  const rawIdentifier = (email || phone || '').trim();
+  const { email, phone, identifier, username, password } = req.body;
+  const rawIdentifier = (identifier || email || phone || username || '').trim();
 
   if (!rawIdentifier || !password) {
     return res.status(400).json({ error: 'WhatsApp ou E-mail e senha são obrigatórios.' });
@@ -53,9 +53,10 @@ async function loginCustomer(req, res) {
 
   try {
     const isEmail = rawIdentifier.includes('@');
+    const cleanPhone = rawIdentifier.replace(/\D/g, '');
     const user = isEmail
       ? await getQuery("SELECT * FROM users WHERE email = ? COLLATE NOCASE", [rawIdentifier])
-      : await getQuery("SELECT * FROM users WHERE phone = ?", [rawIdentifier.replace(/\D/g, '')]);
+      : await getQuery("SELECT * FROM users WHERE phone = ? OR phone = ?", [cleanPhone, rawIdentifier]);
 
     if (!user) {
       return res.status(401).json({ error: 'Cadastro não encontrado no Super Mercado Modelo.' });

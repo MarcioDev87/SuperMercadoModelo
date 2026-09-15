@@ -694,15 +694,15 @@
     function checkCustomerSession() {
       try {
         const userJson = localStorage.getItem('customerUser') || localStorage.getItem('user');
-        const token = localStorage.getItem('customerToken') || localStorage.getItem('token');
+        const token = localStorage.getItem('customerToken') || localStorage.getItem('userToken') || localStorage.getItem('token');
         const greetingName = document.getElementById('user-greeting-name');
         const loginLink = document.getElementById('login-link-btn');
 
         if (userJson && token) {
           const user = JSON.parse(userJson);
-          const firstName = (user.name || user.fullname || 'Cliente').split(' ')[0];
+          const firstName = (user.fullname || user.name || 'Cliente').split(' ')[0];
           if (greetingName) greetingName.innerText = `Olá, ${firstName}`;
-          if (loginLink) loginLink.href = 'index.html#conta';
+          if (loginLink) loginLink.href = 'index.html#minha-conta';
         }
       } catch (e) {}
 
