@@ -30,6 +30,7 @@ app.use(express.urlencoded({ extended: false, limit: '100kb' }));
 app.use('/api', rateLimit({ windowMs: 15 * 60 * 1000, limit: 300, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'Limite de requisições excedido.' } }));
 
 app.use('/assets', express.static(path.join(__dirname, 'assets'), { dotfiles: 'deny', fallthrough: false, maxAge: process.env.NODE_ENV === 'production' ? '1d' : 0 }));
+app.use('/downloads', express.static(path.join(__dirname, 'downloads'), { dotfiles: 'deny', fallthrough: false }));
 app.get('/', (req, res) => res.sendFile(path.join(__dirname, 'index.html')));
 app.get('/:page', (req, res, next) => publicPages.has(req.params.page) ? res.sendFile(path.join(__dirname, req.params.page)) : next());
 

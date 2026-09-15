@@ -1,13 +1,13 @@
-{
-  "appId": "br.com.supermercadomodelo.app",
-  "appName": "Super Mercado Modelo",
-  "webDir": "mobile",
-  "server": {
-    "url": "http://192.168.1.72:3052",
-    "cleartext": true,
-    "androidScheme": "https"
-  },
-  "android": {
-    "allowMixedContent": false
-  }
+﻿{
+    "appId":  "br.com.supermercadomodelo.app",
+    "appName":  "Super Mercado Modelo",
+    "webDir":  "mobile",
+    "server":  {
+                   "url":  "https://modelo.flawlessdev.com.br",
+                   "cleartext":  false,
+                   "androidScheme":  "https"
+               },
+    "android":  {
+                    "allowMixedContent":  false
+                }
 }
