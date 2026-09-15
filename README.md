@@ -72,6 +72,13 @@ Instalação por cabo USB, com depuração USB habilitada:
 
 A versão debug aceita HTTP para testes locais. Para distribuição, gere uma versão release assinada que aponte para HTTPS.
 
+Para gerar os dois aplicativos de teste da publicação:
+
+```powershell
+.\scripts\build-android.ps1 -ServerUrl 'https://modelo.flawlessdev.com.br' -AppId 'br.com.supermercadomodelo.cliente' -AppName 'Super Mercado Modelo' -OutputPath 'downloads\SuperMercadoModelo-Cliente.apk'
+.\scripts\build-android.ps1 -ServerUrl 'https://modelo.flawlessdev.com.br/login_gestor.html' -AppId 'br.com.supermercadomodelo.gestor' -AppName 'Super Mercado Modelo Gestor' -OutputPath 'downloads\SuperMercadoModelo-Gestor.apk'
+```
+
 ## Regras do pedido
 
 - O cliente precisa entrar antes de finalizar.

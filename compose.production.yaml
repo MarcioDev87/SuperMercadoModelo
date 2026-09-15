@@ -8,8 +8,8 @@ services:
     image: super-mercado-modelo:production
     container_name: supermercado-modelo-app
     restart: unless-stopped
-    ports:
-      - "${APP_PORT:-3051}:3051"
+    expose:
+      - "3051"
     env_file:
       - .env
     environment:
