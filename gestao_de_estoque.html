@@ -182,7 +182,7 @@
         <h3 id="metric-ok-stock" class="font-heading font-black text-2xl text-emerald-700 mt-1">0</h3>
       </div>
       <div class="bg-white border border-orange-200 bg-orange-50/40 rounded-2xl p-4 shadow-xs">
-        <span class="text-[11px] font-bold text-orange-800 uppercase tracking-wider block">Estoque Baixo (&le; 10)</span>
+        <span class="text-[11px] font-bold text-orange-800 uppercase tracking-wider block">Estoque no mínimo</span>
         <h3 id="metric-low-stock" class="font-heading font-black text-2xl text-brand-orange mt-1">0</h3>
       </div>
       <div class="bg-white border border-red-200 bg-red-50/40 rounded-2xl p-4 shadow-xs">
@@ -200,13 +200,6 @@
         </div>
         <select id="stock-category-filter" onchange="filterStock()" class="h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 font-medium focus:bg-white focus:outline-none focus:border-emerald-600 transition">
           <option value="">Todos os Departamentos</option>
-          <option value="Hortifruti">Hortifruti</option>
-          <option value="Carnes">Carnes & Aves</option>
-          <option value="Mercearia">Mercearia</option>
-          <option value="Padaria">Padaria</option>
-          <option value="Frios">Frios & Laticínios</option>
-          <option value="Bebidas">Bebidas</option>
-          <option value="Limpeza">Limpeza</option>
         </select>
       </div>
     </div>
@@ -268,6 +261,13 @@
         const data = await res.json();
         if (Array.isArray(data)) {
           allProducts = data;
+          const categoryFilter = document.getElementById('stock-category-filter');
+          const selectedCategory = categoryFilter.value;
+          categoryFilter.replaceChildren(new Option('Todos os Departamentos', ''));
+          [...new Set(data.map(product => product.category).filter(Boolean))]
+            .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+            .forEach(category => categoryFilter.add(new Option(category, category)));
+          categoryFilter.value = selectedCategory;
           updateMetrics();
           filterStock();
         }
@@ -284,8 +284,9 @@
 
       allProducts.forEach(p => {
         const stk = p.stock !== undefined ? p.stock : (p.stock_quantity ?? 50);
+        const minimum = Number.isFinite(Number(p.min_stock)) ? Number(p.min_stock) : 5;
         if (stk <= 0) outCount++;
-        else if (stk <= 10) lowCount++;
+        else if (stk <= minimum) lowCount++;
         else okCount++;
       });
 
@@ -328,8 +329,9 @@
       if (tbody) {
         tbody.innerHTML = products.map(p => {
           const stock = p.stock !== undefined ? p.stock : (p.stock_quantity ?? 50);
+          const minimum = Number.isFinite(Number(p.min_stock)) ? Number(p.min_stock) : 5;
           const isOut = stock <= 0;
-          const isLow = stock > 0 && stock <= 10;
+          const isLow = stock > 0 && stock <= minimum;
 
           let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
           let badgeLabel = `${stock} ${ModeloSecurity.escapeHtml(p.unit || 'un')}`;
@@ -374,8 +376,9 @@
       if (mobileList) {
         mobileList.innerHTML = products.map(p => {
           const stock = p.stock !== undefined ? p.stock : (p.stock_quantity ?? 50);
+          const minimum = Number.isFinite(Number(p.min_stock)) ? Number(p.min_stock) : 5;
           const isOut = stock <= 0;
-          const isLow = stock > 0 && stock <= 10;
+          const isLow = stock > 0 && stock <= minimum;
 
           let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
           let badgeLabel = `${stock} ${ModeloSecurity.escapeHtml(p.unit || 'un')}`;

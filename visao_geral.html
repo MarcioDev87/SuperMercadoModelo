@@ -148,9 +148,9 @@
     <!-- Top Header -->
     <header class="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200 px-6 py-3.5 flex items-center justify-between">
       <div class="flex items-center gap-3">
-        <div class="h-9 w-9 rounded-xl bg-white p-1 shadow flex items-center justify-center border border-surface-600 lg:hidden">
-          <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
-        </div>
+        <button type="button" onclick="toggleMobileSidebar()" class="h-9 w-9 rounded-xl bg-slate-100 text-slate-700 shadow flex items-center justify-center border border-slate-200 lg:hidden" aria-label="Abrir menu de gestão">
+          <span class="material-symbols-outlined">menu</span>
+        </button>
         <div>
           <h1 class="font-heading font-extrabold text-base text-slate-900">Central de Operações</h1>
           <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider">Super Mercado Modelo • Cascavel - CE</span>
@@ -278,6 +278,14 @@
   </div>
 
   <script>
+    function toggleMobileSidebar() {
+      const drawer = document.getElementById('mobile-sidebar-drawer');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      const opening = drawer.classList.contains('-translate-x-full');
+      drawer.classList.toggle('-translate-x-full', !opening);
+      backdrop.classList.toggle('hidden', !opening);
+    }
+
     function checkManagerAuth() {
       const token = localStorage.getItem('adminToken');
       if (!token) {
@@ -307,13 +315,17 @@
           renderDashboardOrders(orders);
         }
 
-        // Fetch products count
-        const prodRes = await fetch('/api/products?limit=1');
+        // Fetch the complete active catalog so the stock KPI reflects real data.
+        const prodRes = await fetch('/api/products?limit=100');
         if (prodRes.ok) {
+          const products = await prodRes.json();
           const totalHeader = prodRes.headers.get('X-Total-Count');
-          if (totalHeader) {
-            document.getElementById('kpi-active-products').innerText = totalHeader;
-          }
+          document.getElementById('kpi-active-products').innerText = totalHeader || products.length;
+          document.getElementById('kpi-low-stock').innerText = products.filter(product => {
+            const stock = Number(product.stock);
+            const minimum = Number(product.min_stock);
+            return Number.isFinite(stock) && Number.isFinite(minimum) && stock <= minimum;
+          }).length;
         }
       } catch (e) {
         console.error('Erro ao carregar métricas:', e);
@@ -339,7 +351,9 @@
       }
 
       kpiOrders.innerText = orders.length;
-      const totalRev = orders.reduce((sum, o) => sum + (Number(o.total_amount || o.total) || 0), 0);
+      const totalRev = orders
+        .filter(o => String(o.status || '').toLowerCase() !== 'cancelado')
+        .reduce((sum, o) => sum + (Number(o.total_amount || o.total) || 0), 0);
       kpiRev.innerText = `R$ ${totalRev.toFixed(2).replace('.', ',')}`;
 
       const recent = orders.slice(0, 8);

@@ -9,7 +9,7 @@
     "export:catalog": "node scripts/export-catalog.js",
     "android:sync": "cap sync android",
     "build:css": "tailwindcss -c tailwind.config.js -i assets/tailwind-input.css -o assets/tailwind.css --minify",
-    "check": "node --check server.js && node --check db.js && node --check src/config/jwt.js && node --check src/controllers/authController.js && node --check src/controllers/productController.js && node --check src/controllers/orderController.js && node --check src/controllers/evolutionController.js",
+    "check": "node --check server.js && node --check db.js && node --check src/config/jwt.js && node --check src/controllers/authController.js && node --check src/controllers/productController.js && node --check src/controllers/orderController.js && node --check src/controllers/evolutionController.js && node scripts/check-html-scripts.js",
     "test": "node --test --test-concurrency=1"
   },
   "dependencies": {

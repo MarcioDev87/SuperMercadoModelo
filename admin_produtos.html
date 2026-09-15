@@ -143,7 +143,7 @@
       </button>
       <div>
         <h1 class="font-heading font-black text-sm sm:text-base text-slate-900 leading-tight">Catálogo de Produtos</h1>
-        <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider">Super Mercado Modelo • 63 Itens Ativos</span>
+        <span id="catalog-count-label" class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider">Super Mercado Modelo • carregando catálogo</span>
       </div>
       <button onclick="openProductModal()" class="px-4 py-2 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs flex items-center gap-1.5 shadow transition">
         <span class="material-symbols-outlined text-base">add</span>
@@ -161,18 +161,11 @@
         </div>
         <select id="admin-cat-filter" onchange="loadAdminProducts()" class="h-10 px-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 focus:outline-none focus:border-emerald-600 w-full sm:w-48 shadow-xs">
           <option value="">Todas as Categorias</option>
-          <option value="Hortifruti">Hortifruti</option>
-          <option value="Açougue">Açougue</option>
-          <option value="Mercearia">Mercearia</option>
-          <option value="Frios">Frios</option>
-          <option value="Bebidas">Bebidas</option>
-          <option value="Limpeza">Limpeza</option>
-          <option value="Padaria">Padaria</option>
         </select>
       </div>
 
       <!-- Products Table -->
-      <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
+      <div class="bg-white border border-slate-200 rounded-2xl overflow-x-auto shadow-xs">
         <table class="w-full text-left text-xs text-slate-700">
           <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold border-b border-slate-200">
             <tr>
@@ -196,7 +189,120 @@
     </main>
   </div>
 
+  <!-- Product editor -->
+  <div id="product-modal" class="fixed inset-0 z-[70] hidden items-center justify-center bg-slate-950/60 p-4 backdrop-blur-sm" role="dialog" aria-modal="true" aria-labelledby="product-modal-title">
+    <div class="w-full max-w-2xl max-h-[92vh] overflow-y-auto rounded-3xl bg-white shadow-2xl">
+      <div class="sticky top-0 z-10 flex items-center justify-between border-b border-slate-200 bg-white px-5 py-4">
+        <div>
+          <h2 id="product-modal-title" class="font-heading text-lg font-black text-slate-900">Cadastrar produto</h2>
+          <p class="text-xs text-slate-500">Preencha os dados que aparecerão na loja.</p>
+        </div>
+        <button type="button" onclick="closeProductModal()" class="rounded-xl p-2 text-slate-500 hover:bg-slate-100" aria-label="Fechar editor">
+          <span class="material-symbols-outlined">close</span>
+        </button>
+      </div>
+
+      <form id="product-form" onsubmit="saveProduct(event)" class="grid grid-cols-1 gap-4 p-5 sm:grid-cols-2">
+        <div class="sm:col-span-2">
+          <label for="product-name" class="mb-1 block text-xs font-bold text-slate-700">Nome *</label>
+          <input id="product-name" required maxlength="150" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label for="product-id" class="mb-1 block text-xs font-bold text-slate-700">Código / ID *</label>
+          <input id="product-id" required maxlength="100" pattern="[A-Za-z0-9._:-]+" placeholder="Ex.: arroz-001" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label for="product-category" class="mb-1 block text-xs font-bold text-slate-700">Categoria *</label>
+          <input id="product-category" required maxlength="80" list="product-category-options" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+          <datalist id="product-category-options">
+            <option value="Hortifruti"><option value="Açougue"><option value="Mercearia"><option value="Frios"><option value="Bebidas"><option value="Limpeza"><option value="Padaria">
+          </datalist>
+        </div>
+        <div>
+          <label for="product-price" class="mb-1 block text-xs font-bold text-slate-700">Preço de venda *</label>
+          <input id="product-price" type="number" required min="0" max="100000" step="0.01" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label for="product-old-price" class="mb-1 block text-xs font-bold text-slate-700">Preço anterior</label>
+          <input id="product-old-price" type="number" min="0" max="100000" step="0.01" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label for="product-stock" class="mb-1 block text-xs font-bold text-slate-700">Estoque atual *</label>
+          <input id="product-stock" type="number" required min="0" max="100000" step="0.001" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label for="product-min-stock" class="mb-1 block text-xs font-bold text-slate-700">Estoque mínimo *</label>
+          <input id="product-min-stock" type="number" required min="0" max="100000" step="0.001" value="5" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label for="product-unit" class="mb-1 block text-xs font-bold text-slate-700">Unidade *</label>
+          <input id="product-unit" required maxlength="20" value="un" placeholder="un, kg, 1L..." class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div>
+          <label for="product-brand" class="mb-1 block text-xs font-bold text-slate-700">Marca</label>
+          <input id="product-brand" maxlength="100" class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div class="sm:col-span-2">
+          <label for="product-image" class="mb-1 block text-xs font-bold text-slate-700">URL da imagem</label>
+          <input id="product-image" type="url" maxlength="500" placeholder="https://..." class="h-11 w-full rounded-xl border border-slate-300 px-3 text-sm focus:border-emerald-600 focus:outline-none">
+        </div>
+        <div id="product-form-alert" class="hidden sm:col-span-2 rounded-xl border px-3 py-2 text-xs font-semibold" role="alert"></div>
+        <div class="flex flex-col-reverse gap-2 border-t border-slate-200 pt-4 sm:col-span-2 sm:flex-row sm:justify-end">
+          <button type="button" onclick="closeProductModal()" class="rounded-xl border border-slate-300 px-5 py-2.5 text-xs font-bold text-slate-700 hover:bg-slate-50">Cancelar</button>
+          <button id="save-product-btn" type="submit" class="rounded-xl bg-emerald-700 px-5 py-2.5 text-xs font-bold text-white hover:bg-emerald-800 disabled:opacity-50">Salvar produto</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
   <script>
+    let editingProduct = null;
+
+    function toggleMobileSidebar() {
+      const drawer = document.getElementById('mobile-sidebar-drawer');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      const opening = drawer.classList.contains('-translate-x-full');
+      drawer.classList.toggle('-translate-x-full', !opening);
+      backdrop.classList.toggle('hidden', !opening);
+    }
+
+    function setProductAlert(message, type = 'error') {
+      const box = document.getElementById('product-form-alert');
+      box.textContent = message;
+      box.className = `sm:col-span-2 rounded-xl border px-3 py-2 text-xs font-semibold ${type === 'success' ? 'border-emerald-200 bg-emerald-50 text-emerald-800' : 'border-red-200 bg-red-50 text-red-700'}`;
+    }
+
+    function openProductModal(product = null) {
+      editingProduct = product;
+      document.getElementById('product-modal-title').textContent = product ? 'Editar produto' : 'Cadastrar produto';
+      document.getElementById('product-form').reset();
+      document.getElementById('product-form-alert').className = 'hidden sm:col-span-2 rounded-xl border px-3 py-2 text-xs font-semibold';
+      document.getElementById('product-id').value = product?.id || '';
+      document.getElementById('product-id').disabled = Boolean(product);
+      document.getElementById('product-name').value = product?.name || '';
+      document.getElementById('product-category').value = product?.category || '';
+      document.getElementById('product-price').value = product?.price ?? '';
+      document.getElementById('product-old-price').value = product?.old_price ?? '';
+      document.getElementById('product-stock').value = product?.stock ?? 0;
+      document.getElementById('product-min-stock').value = product?.min_stock ?? 5;
+      document.getElementById('product-unit').value = product?.unit || 'un';
+      document.getElementById('product-brand').value = product?.brand || '';
+      document.getElementById('product-image').value = product?.img || '';
+      const modal = document.getElementById('product-modal');
+      modal.classList.remove('hidden');
+      modal.classList.add('flex');
+      document.body.classList.add('overflow-hidden');
+      document.getElementById('product-name').focus();
+    }
+
+    function closeProductModal() {
+      const modal = document.getElementById('product-modal');
+      modal.classList.add('hidden');
+      modal.classList.remove('flex');
+      document.body.classList.remove('overflow-hidden');
+      editingProduct = null;
+    }
+
     async function loadAdminProducts() {
       const tbody = document.getElementById('admin-products-tbody');
       const token = localStorage.getItem('adminToken');
@@ -212,6 +318,15 @@
       try {
         const res = await fetch(`/api/products?${params.toString()}`);
         const products = await res.json();
+        if (!q && !cat) {
+          const total = res.headers.get('X-Total-Count') || products.length;
+          document.getElementById('catalog-count-label').textContent = `Super Mercado Modelo • ${total} itens ativos`;
+          const categoryFilter = document.getElementById('admin-cat-filter');
+          categoryFilter.replaceChildren(new Option('Todas as Categorias', ''));
+          [...new Set(products.map(product => product.category).filter(Boolean))]
+            .sort((a, b) => a.localeCompare(b, 'pt-BR'))
+            .forEach(category => categoryFilter.add(new Option(category, category)));
+        }
 
         if (!products || products.length === 0) {
           tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum produto encontrado.</td></tr>';
@@ -252,24 +367,53 @@
     }
 
     async function editProduct(id) {
+      try {
+        const response = await fetch(`/api/products/${encodeURIComponent(id)}`);
+        const product = await response.json();
+        if (!response.ok) throw new Error(product.error || 'Produto não encontrado.');
+        openProductModal(product);
+      } catch (error) {
+        openProductModal();
+        setProductAlert(error.message);
+      }
+    }
+
+    async function saveProduct(event) {
+      event.preventDefault();
       const token = localStorage.getItem('adminToken');
-      const response = await fetch(`/api/products/${encodeURIComponent(id)}`);
-      if (!response.ok) return alert('Produto não encontrado.');
-      const product = await response.json();
-      const name = prompt('Nome do produto:', product.name);
-      if (name === null) return;
-      const price = prompt('Preço de venda:', product.price);
-      if (price === null) return;
-      const stock = prompt('Estoque atual:', product.stock);
-      if (stock === null) return;
-      const save = await fetch('/api/products', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
-        body: JSON.stringify({ ...product, name, price, stock })
-      });
-      const data = await save.json();
-      if (!save.ok) return alert(data.error || 'Não foi possível salvar.');
-      await loadAdminProducts();
+      const button = document.getElementById('save-product-btn');
+      const payload = {
+        ...(editingProduct || {}),
+        id: editingProduct?.id || document.getElementById('product-id').value.trim(),
+        name: document.getElementById('product-name').value.trim(),
+        category: document.getElementById('product-category').value.trim(),
+        price: document.getElementById('product-price').value,
+        old_price: document.getElementById('product-old-price').value,
+        stock: document.getElementById('product-stock').value,
+        min_stock: document.getElementById('product-min-stock').value,
+        unit: document.getElementById('product-unit').value.trim(),
+        brand: document.getElementById('product-brand').value.trim(),
+        img: document.getElementById('product-image').value.trim()
+      };
+      button.disabled = true;
+      button.textContent = 'Salvando...';
+      try {
+        const response = await fetch('/api/products', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+          body: JSON.stringify(payload)
+        });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error || 'Não foi possível salvar o produto.');
+        setProductAlert('Produto salvo com sucesso.', 'success');
+        await loadAdminProducts();
+        setTimeout(closeProductModal, 500);
+      } catch (error) {
+        setProductAlert(error.message);
+      } finally {
+        button.disabled = false;
+        button.textContent = 'Salvar produto';
+      }
     }
 
     function handleLogout() {
