@@ -5,11 +5,11 @@ async function getDashboardStats(req, res) {
     const ordersTodayRow = await getQuery(`
       SELECT COUNT(*) as total, COALESCE(SUM(total), 0) as revenue
       FROM orders
-      WHERE date(created_at) = date('now')
+      WHERE date(created_at, 'localtime') = date('now', 'localtime') AND status != 'cancelado'
     `);
-    const pendingRow = await getQuery("SELECT COUNT(*) as total FROM orders WHERE status = 'recebido'");
+    const pendingRow = await getQuery("SELECT COUNT(*) as total FROM orders WHERE status IN ('recebido', 'criado', 'CRIADO')");
     const separationRow = await getQuery("SELECT COUNT(*) as total FROM orders WHERE status = 'separacao'");
-    const readyRow = await getQuery("SELECT COUNT(*) as total FROM orders WHERE status IN ('pronto', 'saiu_entrega')");
+    const readyRow = await getQuery("SELECT COUNT(*) as total FROM orders WHERE status IN ('pronto', 'entrega', 'saiu_entrega')");
     const lowStockRow = await getQuery("SELECT COUNT(*) as total FROM products WHERE is_active = 1 AND stock <= min_stock AND stock > 0");
     const noStockRow = await getQuery("SELECT COUNT(*) as total FROM products WHERE is_active = 1 AND stock <= 0");
 

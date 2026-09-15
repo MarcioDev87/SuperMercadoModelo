@@ -1,0 +1,14 @@
+.git
+.gitignore
+.env
+node_modules
+npm-debug.log*
+android
+dist
+docs
+test
+scripts
+data/*.db
+data/*.db-*
+*.apk
+assets/app-icon-source.png

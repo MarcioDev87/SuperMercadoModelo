@@ -4,29 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Entrar ou Cadastrar — Super Mercado Modelo</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/tailwind.css" />
   <link rel="stylesheet" href="assets/modelo-tokens.css" />
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            modelo: {
-              green: '#15803d',
-              orange: '#ea580c',
-              yellow: '#f59e0b',
-              dark: '#0b1320',
-              card: '#131f33',
-              border: '#1e2f4d'
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
@@ -94,8 +75,8 @@
         <input id="reg-address" type="text" required placeholder="Ex: Av. Principal, 100 - Centro" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
       </div>
       <div>
-        <label class="block text-xs font-semibold text-slate-300 mb-1">Crie uma Senha (mínimo 6 dígitos) *</label>
-        <input id="reg-password" type="password" required minlength="6" placeholder="••••••••" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Crie uma Senha (mínimo 8 caracteres) *</label>
+        <input id="reg-password" type="password" required minlength="8" maxlength="128" placeholder="••••••••" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
       </div>
       <div id="reg-alert" class="hidden p-3 rounded-xl bg-red-950/60 border border-red-800 text-red-300 text-xs"></div>
       <button type="submit" id="btn-reg-cust" class="w-full h-12 rounded-xl bg-orange-600 hover:bg-orange-500 font-bold text-sm text-white shadow-lg transition">
@@ -151,7 +132,9 @@
           localStorage.setItem('user', JSON.stringify(data.user));
           localStorage.setItem('customerUser', JSON.stringify(data.user));
           localStorage.setItem('isLoggedIn', 'true');
-          window.location.href = 'index.html';
+          const destination = localStorage.getItem('checkout_redirect') || 'index.html';
+          localStorage.removeItem('checkout_redirect');
+          window.location.href = destination;
         } else {
           alertBox.innerText = data.error || 'Falha ao autenticar.';
           alertBox.classList.remove('hidden');
@@ -187,7 +170,9 @@
           localStorage.setItem('customerUser', JSON.stringify(data.user));
           localStorage.setItem('isLoggedIn', 'true');
           alert('🎉 Cadastro realizado com sucesso no Super Mercado Modelo!');
-          window.location.href = 'index.html';
+          const destination = localStorage.getItem('checkout_redirect') || 'index.html';
+          localStorage.removeItem('checkout_redirect');
+          window.location.href = destination;
         } else {
           alertBox.innerText = data.error || 'Erro ao realizar cadastro.';
           alertBox.classList.remove('hidden');

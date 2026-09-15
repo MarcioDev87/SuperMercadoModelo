@@ -9,38 +9,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/tailwind.css">
   <link rel="stylesheet" href="assets/modelo-tokens.css">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              green: '#15803d',
-              greenHover: '#166534',
-              greenLight: '#22c55e',
-              orange: '#ea580c',
-              orangeHover: '#c2410c',
-              yellow: '#f59e0b',
-              red: '#dc2626'
-            },
-            surface: {
-              900: '#0b1320',
-              800: '#111c2e',
-              700: '#1e2d42',
-              600: '#2c3e55'
-            }
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            heading: ['"Outfit"', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
+  <script src="assets/modelo-security.js"></script>
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
@@ -403,7 +374,7 @@
     function getCart() {
       try {
         const raw = localStorage.getItem('modelo_cart');
-        return raw ? JSON.parse(raw) : [];
+        return raw ? ModeloSecurity.safeCart(JSON.parse(raw)) : [];
       } catch (e) {
         return [];
       }
@@ -431,6 +402,11 @@
         });
       }
       saveCart(cart);
+    }
+
+    function addProductToCart(id) {
+      const product = allProducts.find(item => String(item.id) === String(id));
+      if (product) addToCart(product.id, product.name, product.price, product.img, product.unit);
     }
 
     function decrementCartItem(id) {
@@ -602,9 +578,9 @@
         const oldPriceNum = Number(prod.old_price) || 0;
         const hasDiscount = oldPriceNum > priceNum;
         const discountPct = hasDiscount ? Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100) : 0;
-        const safeName = (prod.name || '').replace(/"/g, '&quot;');
-        const safeImg = prod.img || 'https://via.placeholder.com/200?text=Modelo';
-        const unitLabel = prod.unit || 'un';
+        const safeName = ModeloSecurity.escapeHtml(prod.name);
+        const safeImg = ModeloSecurity.safeImageUrl(prod.img, 'https://via.placeholder.com/200?text=Modelo');
+        const unitLabel = ModeloSecurity.escapeHtml(prod.unit || 'un');
 
         return `
           <div class="bg-white rounded-2xl border border-slate-200 p-3 sm:p-3.5 flex flex-col justify-between hover:border-emerald-500 hover:shadow-md transition-all group relative shadow-xs">
@@ -631,9 +607,9 @@
 
             <!-- Category & Name -->
             <div class="mt-2.5 flex-1 flex flex-col">
-              <span class="text-[10px] font-bold text-brand-orange uppercase tracking-wider">${prod.subcategory || prod.category || 'Geral'}</span>
+              <span class="text-[10px] font-bold text-brand-orange uppercase tracking-wider">${ModeloSecurity.escapeHtml(prod.subcategory || prod.category || 'Geral')}</span>
               <h4 class="font-bold text-xs sm:text-sm text-slate-900 line-clamp-2 mt-0.5 leading-snug group-hover:text-emerald-700 transition-colors" title="${safeName}">
-                ${prod.name}
+                ${safeName}
               </h4>
             </div>
 
@@ -660,12 +636,12 @@
                     <span class="material-symbols-outlined text-sm">remove</span>
                   </button>
                   <span class="text-xs font-extrabold text-emerald-700">${qtyInCart} ${unitLabel.includes('kg') ? 'kg' : 'un'}</span>
-                  <button onclick="addToCart('${prod.id}', '${safeName}', ${priceNum}, '${safeImg}', '${unitLabel}')" class="w-8 h-8 rounded-lg bg-brand-green hover:bg-brand-greenHover text-white flex items-center justify-center shadow transition">
+                  <button onclick="addProductToCart('${prod.id}')" class="w-8 h-8 rounded-lg bg-brand-green hover:bg-brand-greenHover text-white flex items-center justify-center shadow transition">
                     <span class="material-symbols-outlined text-sm">add</span>
                   </button>
                 </div>
               ` : `
-                <button onclick="addToCart('${prod.id}', '${safeName}', ${priceNum}, '${safeImg}', '${unitLabel}')" class="w-full h-10 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand-green/20 transition active:scale-95">
+                <button onclick="addProductToCart('${prod.id}')" class="w-full h-10 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand-green/20 transition active:scale-95">
                   <span class="material-symbols-outlined text-base">add_shopping_cart</span>
                   <span>Adicionar</span>
                 </button>

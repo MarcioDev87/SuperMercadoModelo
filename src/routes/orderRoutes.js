@@ -1,11 +1,14 @@
 const express = require('express');
-const router = express.Router();
+const rateLimit = require('express-rate-limit');
 const orderController = require('../controllers/orderController');
-const { authenticateAdmin } = require('../config/jwt');
+const { authenticateAdmin, authenticateToken } = require('../config/jwt');
 
-router.post('/', orderController.createOrder);
+const router = express.Router();
+const orderLimiter = rateLimit({ windowMs: 15 * 60 * 1000, limit: 30, standardHeaders: 'draft-8', legacyHeaders: false, message: { error: 'Muitos pedidos enviados. Aguarde antes de tentar novamente.' } });
+
+router.post('/', orderLimiter, authenticateToken, orderController.createOrder);
 router.get('/', authenticateAdmin, orderController.listOrders);
-router.get('/:id', orderController.getOrderDetails);
+router.get('/:id', authenticateToken, orderController.getOrderDetails);
 router.patch('/:id/status', authenticateAdmin, orderController.updateOrderStatus);
 router.put('/:id/status', authenticateAdmin, orderController.updateOrderStatus);
 router.put('/:id/substitute', authenticateAdmin, orderController.substituteOrderItem);

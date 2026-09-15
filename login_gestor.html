@@ -4,30 +4,10 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Acesso do Gestor — Super Mercado Modelo</title>
-  <script src="https://cdn.tailwindcss.com"></script>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/tailwind.css" />
   <link rel="stylesheet" href="assets/modelo-tokens.css" />
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            modelo: {
-              green: '#15803d',
-              'green-dark': '#166534',
-              orange: '#ea580c',
-              yellow: '#f59e0b',
-              dark: '#0b1320',
-              card: '#131f33',
-              border: '#1e2f4d'
-            }
-          }
-        }
-      }
-    }
-  </script>
   <style>
     body { font-family: 'Inter', sans-serif; }
   </style>
@@ -56,8 +36,7 @@
             type="text"
             required
             autocomplete="username"
-            placeholder="admin@supermercadomodelo.com.br"
-            value="admin@supermercadomodelo.com.br"
+            placeholder="gestor@seu-dominio.com.br"
             class="w-full h-12 pl-10 pr-4 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
           />
         </div>
@@ -75,7 +54,6 @@
             required
             autocomplete="current-password"
             placeholder="••••••••"
-            value="admin123"
             class="w-full h-12 pl-10 pr-12 rounded-xl bg-slate-950 border border-slate-700 text-sm text-white focus:outline-none focus:border-emerald-500 focus:ring-1 focus:ring-emerald-500 transition"
           />
           <button type="button" onclick="togglePassword()" class="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">

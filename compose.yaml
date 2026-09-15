@@ -1,0 +1,36 @@
+services:
+  mercado-modelo:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: super-mercado-modelo:1.0.0
+    restart: unless-stopped
+    ports:
+      - "${APP_PORT:-3051}:3051"
+    environment:
+      NODE_ENV: production
+      PORT: 3051
+      DB_PATH: /data/modelo.db
+      TRUST_PROXY: "${TRUST_PROXY:-0}"
+      CORS_ORIGINS: "${CORS_ORIGINS:-}"
+      JWT_SECRET: "${JWT_SECRET:?Defina JWT_SECRET no arquivo .env}"
+      ADMIN_EMAIL: "${ADMIN_EMAIL:?Defina ADMIN_EMAIL no arquivo .env}"
+      ADMIN_PASSWORD: "${ADMIN_PASSWORD:?Defina ADMIN_PASSWORD no arquivo .env}"
+      ADMIN_NAME: "${ADMIN_NAME:-Gestor Modelo}"
+      ADMIN_PHONE: "${ADMIN_PHONE:-}"
+      STORE_PHONE: "${STORE_PHONE:-}"
+      STORE_ADDRESS: "${STORE_ADDRESS:-}"
+      STORE_BAIRRO: "${STORE_BAIRRO:-Centro}"
+      STORE_CITY: "${STORE_CITY:-Cascavel - CE}"
+      DELIVERY_FEE: "${DELIVERY_FEE:-5}"
+      MIN_ORDER_VALUE: "${MIN_ORDER_VALUE:-20}"
+    volumes:
+      - modelo_data:/data
+    read_only: true
+    tmpfs:
+      - /tmp:size=32m,noexec,nosuid
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  modelo_data:

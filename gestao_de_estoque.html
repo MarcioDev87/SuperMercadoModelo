@@ -8,31 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/tailwind.css">
   <link rel="stylesheet" href="assets/modelo-tokens.css">
-  <script>
-    tailwind.config = {
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              green: '#15803d',
-              greenHover: '#166534',
-              greenLight: '#22c55e',
-              orange: '#ea580c',
-              orangeHover: '#c2410c',
-              yellow: '#f59e0b',
-              red: '#dc2626'
-            }
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            heading: ['"Outfit"', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
+  <script src="assets/modelo-security.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-16 selection:bg-brand-orange selection:text-white">
 
@@ -354,27 +332,27 @@
           const isLow = stock > 0 && stock <= 10;
 
           let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-          let badgeLabel = `${stock} ${p.unit || 'un'}`;
+          let badgeLabel = `${stock} ${ModeloSecurity.escapeHtml(p.unit || 'un')}`;
           if (isOut) {
             badgeClass = 'bg-red-50 text-red-700 border-red-200 font-black';
             badgeLabel = 'ESGOTADO (0)';
           } else if (isLow) {
             badgeClass = 'bg-orange-50 text-orange-800 border-orange-200 font-bold';
-            badgeLabel = `${stock} ${p.unit || 'un'} (BAIXO)`;
+            badgeLabel = `${stock} ${ModeloSecurity.escapeHtml(p.unit || 'un')} (BAIXO)`;
           }
 
           return `
             <tr class="hover:bg-slate-50 transition">
               <td class="p-3.5 flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-white border border-slate-200 p-0.5 shrink-0 flex items-center justify-center overflow-hidden">
-                  <img src="${p.img || 'https://via.placeholder.com/80'}" alt="${p.name}" class="w-full h-full object-contain" />
+                  <img src="${ModeloSecurity.safeImageUrl(p.img, 'https://via.placeholder.com/80')}" alt="${ModeloSecurity.escapeHtml(p.name)}" class="w-full h-full object-contain" />
                 </div>
                 <div>
-                  <span class="font-bold text-slate-900 block">${p.name}</span>
+                  <span class="font-bold text-slate-900 block">${ModeloSecurity.escapeHtml(p.name)}</span>
                   <span class="text-[10px] text-slate-400 font-mono">${p.id}</span>
                 </div>
               </td>
-              <td class="p-3.5 text-slate-600 font-semibold">${p.category || 'Geral'}</td>
+              <td class="p-3.5 text-slate-600 font-semibold">${ModeloSecurity.escapeHtml(p.category || 'Geral')}</td>
               <td class="p-3.5 font-bold text-emerald-700">R$ ${Number(p.price || 0).toFixed(2).replace('.', ',')}</td>
               <td class="p-3.5">
                 <span class="px-2.5 py-1 rounded-full text-xs border ${badgeClass}">
@@ -400,25 +378,25 @@
           const isLow = stock > 0 && stock <= 10;
 
           let badgeClass = 'bg-emerald-50 text-emerald-700 border-emerald-200';
-          let badgeLabel = `${stock} ${p.unit || 'un'}`;
+          let badgeLabel = `${stock} ${ModeloSecurity.escapeHtml(p.unit || 'un')}`;
           if (isOut) {
             badgeClass = 'bg-red-50 text-red-700 border-red-200 font-black';
             badgeLabel = 'ESGOTADO';
           } else if (isLow) {
             badgeClass = 'bg-orange-50 text-orange-800 border-orange-200 font-bold';
-            badgeLabel = `${stock} ${p.unit || 'un'} (BAIXO)`;
+            badgeLabel = `${stock} ${ModeloSecurity.escapeHtml(p.unit || 'un')} (BAIXO)`;
           }
 
           return `
             <div class="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2.5 shadow-xs">
               <div class="flex items-center gap-3">
                 <div class="w-11 h-11 rounded-xl bg-white border border-slate-200 p-0.5 shrink-0 flex items-center justify-center overflow-hidden">
-                  <img src="${p.img || 'https://via.placeholder.com/80'}" alt="${p.name}" class="w-full h-full object-contain" />
+                  <img src="${ModeloSecurity.safeImageUrl(p.img, 'https://via.placeholder.com/80')}" alt="${ModeloSecurity.escapeHtml(p.name)}" class="w-full h-full object-contain" />
                 </div>
                 <div class="flex-1 min-w-0">
-                  <h4 class="font-bold text-slate-900 text-xs truncate">${p.name}</h4>
+                  <h4 class="font-bold text-slate-900 text-xs truncate">${ModeloSecurity.escapeHtml(p.name)}</h4>
                   <div class="flex items-center justify-between mt-1 text-[11px]">
-                    <span class="text-slate-500">${p.category || 'Geral'}</span>
+                    <span class="text-slate-500">${ModeloSecurity.escapeHtml(p.category || 'Geral')}</span>
                     <span class="font-bold text-emerald-700">R$ ${Number(p.price || 0).toFixed(2).replace('.', ',')}</span>
                   </div>
                 </div>

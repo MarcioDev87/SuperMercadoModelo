@@ -8,38 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/tailwind.css">
   <link rel="stylesheet" href="assets/modelo-tokens.css">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              green: '#15803d',
-              greenHover: '#166534',
-              greenLight: '#22c55e',
-              orange: '#ea580c',
-              orangeHover: '#c2410c',
-              yellow: '#f59e0b',
-              red: '#dc2626'
-            },
-            surface: {
-              900: '#0b1320',
-              800: '#111c2e',
-              700: '#1e2d42',
-              600: '#2c3e55'
-            }
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            heading: ['"Outfit"', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
+  <script src="assets/modelo-security.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-100 font-sans antialiased min-h-screen pb-20 selection:bg-brand-orange selection:text-slate-900">
 
@@ -117,7 +88,7 @@
           <span class="material-symbols-outlined text-green-400 text-2xl">chat</span>
           <div class="text-xs">
             <span class="font-bold text-slate-900 block">Acompanhe pelo WhatsApp</span>
-            <span class="text-[11px] text-slate-400">Receba atualizações automáticas de status.</span>
+            <span class="text-[11px] text-slate-400">Converse com a loja sobre o andamento.</span>
           </div>
         </div>
         <a id="whatsapp-link-btn" href="#" target="_blank" class="px-3.5 py-2 rounded-xl bg-green-600 hover:bg-green-700 text-slate-900 font-bold text-xs shadow transition">
@@ -137,13 +108,27 @@
   </main>
 
   <script>
-    document.addEventListener('DOMContentLoaded', () => {
+    document.addEventListener('DOMContentLoaded', async () => {
       const params = new URLSearchParams(window.location.search);
       const orderNumber = params.get('orderNumber') || 'MOD-000000';
       document.getElementById('order-code-display').innerText = orderNumber;
-
+      const orderId = params.get('orderId');
+      const token = localStorage.getItem('customerToken') || localStorage.getItem('token');
+      if (orderId && token) {
+        const response = await fetch(`/api/orders/${encodeURIComponent(orderId)}`, { headers: { 'Authorization': `Bearer ${token}` } });
+        if (!response.ok) document.querySelector('main p').textContent = 'Não foi possível confirmar os detalhes deste pedido.';
+      }
+      let storePhone = '';
+      try {
+        const response = await fetch('/api/auth/store-info');
+        const data = response.ok ? await response.json() : {};
+        storePhone = String(data.store && data.store.phone || '').replace(/\D/g, '');
+        if (storePhone.length === 10 || storePhone.length === 11) storePhone = `55${storePhone}`;
+      } catch {}
       const waMsg = encodeURIComponent(`Olá, acabei de realizar o pedido ${orderNumber} no Super Mercado Modelo e gostaria de acompanhar a entrega!`);
-      document.getElementById('whatsapp-link-btn').href = `https://wa.me/5585999999999?text=${waMsg}`;
+      const link = document.getElementById('whatsapp-link-btn');
+      if (storePhone) link.href = `https://wa.me/${storePhone}?text=${waMsg}`;
+      else { link.removeAttribute('href'); link.textContent = 'Contato não configurado'; }
     });
   </script>
 </body>

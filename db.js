@@ -37,6 +37,18 @@ function allOn(database, sql, params = []) {
 const runQuery = (sql, params = []) => runOn(db, sql, params);
 const getQuery = (sql, params = []) => getOn(db, sql, params);
 const allQuery = (sql, params = []) => allOn(db, sql, params);
+const environmentNumber = (name, fallback) => {
+  if (process.env[name] === undefined || process.env[name] === '') return fallback;
+  const value = Number(process.env[name]);
+  return Number.isFinite(value) ? value : fallback;
+};
+
+async function ensureColumn(table, column, definition) {
+  const columns = await allQuery(`PRAGMA table_info(${table})`);
+  if (!columns.some(item => item.name === column)) {
+    await runQuery(`ALTER TABLE ${table} ADD COLUMN ${column} ${definition}`);
+  }
+}
 
 async function withTransaction(work) {
   const transactionDb = new sqlite3.Database(DB_PATH);
@@ -64,6 +76,7 @@ async function withTransaction(work) {
 async function initDB() {
   await runQuery('PRAGMA foreign_keys = ON');
   await runQuery('PRAGMA busy_timeout = 10000');
+  await runQuery('PRAGMA journal_mode = WAL');
 
   // Store Configuration (Single Dedicated Store: Super Mercado Modelo)
   await runQuery(`
@@ -145,10 +158,18 @@ async function initDB() {
       payment_status TEXT DEFAULT 'pending',
       status TEXT DEFAULT 'recebido',
       pickup_code TEXT,
+      idempotency_key TEXT,
+      inventory_restored INTEGER DEFAULT 0,
       notes TEXT,
       created_at DATETIME DEFAULT CURRENT_TIMESTAMP
     )
   `);
+
+  await ensureColumn('orders', 'idempotency_key', 'TEXT');
+  await ensureColumn('orders', 'inventory_restored', 'INTEGER DEFAULT 0');
+  await runQuery('CREATE UNIQUE INDEX IF NOT EXISTS idx_orders_idempotency_key ON orders(idempotency_key) WHERE idempotency_key IS NOT NULL');
+  await runQuery('CREATE INDEX IF NOT EXISTS idx_orders_customer_id ON orders(customer_id)');
+  await runQuery('CREATE INDEX IF NOT EXISTS idx_orders_created_at ON orders(created_at)');
 
   // Order Items
   await runQuery(`
@@ -164,6 +185,7 @@ async function initDB() {
       FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
     )
   `);
+  await runQuery('CREATE INDEX IF NOT EXISTS idx_order_items_order_id ON order_items(order_id)');
 
   // Legal Consents
   await runQuery(`
@@ -193,21 +215,53 @@ async function initDB() {
   const store = await getQuery("SELECT id FROM store_info LIMIT 1");
   if (!store) {
     await runQuery(`
-      INSERT INTO store_info (name, legal_name, cnpj, phone, email, address, bairro, city, state, delivery_radius_km, initial_delivery_fee)
-      VALUES ('Super Mercado Modelo', 'Super Mercado Modelo Ltda', '12.345.678/0001-90', '85996249271', 'contato@supermercadomodelo.com.br', 'Av. Principal, 1000', 'Centro', 'Cascavel - CE', 'CE', 8.0, 5.00)
-    `);
-  } else {
-    await runQuery("UPDATE store_info SET city = 'Cascavel - CE' WHERE id = ?", [store.id]);
+      INSERT INTO store_info (name, legal_name, cnpj, phone, email, address, bairro, city, state, delivery_radius_km, initial_delivery_fee, min_order_value)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+    `, [
+      process.env.STORE_NAME || 'Super Mercado Modelo', process.env.STORE_LEGAL_NAME || null,
+      process.env.STORE_CNPJ || null, (process.env.STORE_PHONE || '').replace(/\D/g, '') || null,
+      process.env.STORE_EMAIL || null, process.env.STORE_ADDRESS || null,
+      process.env.STORE_BAIRRO || 'Centro', process.env.STORE_CITY || 'Cascavel - CE',
+      process.env.STORE_STATE || 'CE', environmentNumber('DELIVERY_RADIUS_KM', 8),
+      environmentNumber('DELIVERY_FEE', 5), environmentNumber('MIN_ORDER_VALUE', 20)
+    ]);
   }
 
-  // Seed Manager user if not present
+  const productCount = await getQuery('SELECT COUNT(*) AS total FROM products');
+  const catalogPath = path.join(__dirname, 'data', 'catalog-seed.json');
+  if ((!productCount || productCount.total === 0) && fs.existsSync(catalogPath)) {
+    const catalog = JSON.parse(fs.readFileSync(catalogPath, 'utf8'));
+    await withTransaction(async tx => {
+      for (const product of catalog) {
+        await tx.runQuery(`INSERT INTO products
+          (id, name, price, old_price, category, subcategory, unit, brand, ean, img, stock, safety_stock, min_stock, reserved_stock, is_active)
+          VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`, [
+          product.id, product.name, product.price, product.old_price, product.category,
+          product.subcategory, product.unit, product.brand, product.ean, product.img,
+          product.stock, product.safety_stock, product.min_stock, 0, 1
+        ]);
+      }
+    });
+  }
+
+  // O primeiro gestor é criado somente quando credenciais foram fornecidas pelo ambiente.
   const manager = await getQuery("SELECT id FROM users WHERE role = 'admin' LIMIT 1");
   if (!manager) {
-    const hash = await bcrypt.hash('admin123', 10);
+    const managerEmail = (process.env.ADMIN_EMAIL || '').trim().toLowerCase();
+    const managerPassword = process.env.ADMIN_PASSWORD || '';
+    if (process.env.NODE_ENV === 'production' && (!managerEmail || managerPassword.length < 12)) {
+      throw new Error('ADMIN_EMAIL e ADMIN_PASSWORD (mínimo 12 caracteres) são obrigatórios no primeiro início.');
+    }
+    if (!managerEmail || managerPassword.length < 12) return;
+    const hash = await bcrypt.hash(managerPassword, 12);
     await runQuery(`
       INSERT INTO users (fullname, email, phone, password, role, address, bairro, city)
-      VALUES ('Gestor Modelo', 'admin@supermercadomodelo.com.br', '85996249271', ?, 'admin', 'Av. Principal, 1000', 'Centro', 'Cascavel - CE')
-    `, [hash]);
+      VALUES (?, ?, ?, ?, 'admin', ?, ?, ?)
+    `, [
+      (process.env.ADMIN_NAME || 'Gestor Modelo').trim(), managerEmail,
+      (process.env.ADMIN_PHONE || '').replace(/\D/g, '') || null, hash,
+      process.env.STORE_ADDRESS || '', process.env.STORE_BAIRRO || 'Centro', process.env.STORE_CITY || 'Cascavel - CE'
+    ]);
   }
 }
 

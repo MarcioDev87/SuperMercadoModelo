@@ -1,48 +1,49 @@
+const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
+const { getQuery } = require('../../db');
 
-const JWT_SECRET = process.env.JWT_SECRET || 'super-mercado-modelo-segredo-de-producao-2026-forte';
+let developmentSecret;
 
-function generateToken(payload) {
-  return jwt.sign(payload, JWT_SECRET, { expiresIn: '30d' });
+function getJwtSecret() {
+  const configured = process.env.JWT_SECRET;
+  if (configured) {
+    if (configured.length < 32) throw new Error('JWT_SECRET deve ter pelo menos 32 caracteres.');
+    return configured;
+  }
+  if (process.env.NODE_ENV === 'production') throw new Error('JWT_SECRET é obrigatório em produção.');
+  developmentSecret ||= crypto.randomBytes(48).toString('base64url');
+  return developmentSecret;
+}
+
+function generateToken(user) {
+  return jwt.sign({ sub: String(user.id), role: user.role }, getJwtSecret(), {
+    expiresIn: '8h', issuer: 'super-mercado-modelo', audience: 'modelo-web'
+  });
 }
 
 function verifyToken(token) {
   try {
-    return jwt.verify(token, JWT_SECRET);
-  } catch {
-    return null;
-  }
+    return jwt.verify(token, getJwtSecret(), { issuer: 'super-mercado-modelo', audience: 'modelo-web' });
+  } catch { return null; }
 }
 
-function authenticateToken(req, res, next) {
-  const authHeader = req.headers['authorization'];
-  const token = authHeader && authHeader.split(' ')[1];
-
-  if (!token) {
-    return res.status(401).json({ error: 'Token de autenticação não fornecido.' });
-  }
-
-  const decoded = verifyToken(token);
-  if (!decoded) {
-    return res.status(403).json({ error: 'Token inválido ou expirado.' });
-  }
-
-  req.user = decoded;
-  next();
+async function authenticateToken(req, res, next) {
+  try {
+    const match = /^Bearer\s+(.+)$/i.exec(req.headers.authorization || '');
+    const decoded = match ? verifyToken(match[1]) : null;
+    if (!decoded || !decoded.sub) return res.status(401).json({ error: 'Autenticação inválida ou expirada.' });
+    const user = await getQuery('SELECT id, fullname, email, phone, role FROM users WHERE id = ?', [decoded.sub]);
+    if (!user || user.role !== decoded.role) return res.status(401).json({ error: 'Sessão não é mais válida.' });
+    req.user = user;
+    return next();
+  } catch (error) { return next(error); }
 }
 
 function authenticateAdmin(req, res, next) {
-  authenticateToken(req, res, () => {
-    if (req.user.role !== 'admin') {
-      return res.status(403).json({ error: 'Acesso restrito ao gestor do Super Mercado Modelo.' });
-    }
-    next();
+  return authenticateToken(req, res, () => {
+    if (req.user.role !== 'admin') return res.status(403).json({ error: 'Acesso restrito ao gestor.' });
+    return next();
   });
 }
 
-module.exports = {
-  generateToken,
-  verifyToken,
-  authenticateToken,
-  authenticateAdmin
-};
+module.exports = { generateToken, verifyToken, authenticateToken, authenticateAdmin, getJwtSecret };

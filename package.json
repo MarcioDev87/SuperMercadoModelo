@@ -6,8 +6,11 @@
   "scripts": {
     "start": "node server.js",
     "dev": "node server.js",
+    "export:catalog": "node scripts/export-catalog.js",
+    "android:sync": "cap sync android",
+    "build:css": "tailwindcss -c tailwind.config.js -i assets/tailwind-input.css -o assets/tailwind.css --minify",
     "check": "node --check server.js && node --check db.js && node --check src/config/jwt.js && node --check src/controllers/authController.js && node --check src/controllers/productController.js && node --check src/controllers/orderController.js && node --check src/controllers/evolutionController.js",
-    "test": "node --test"
+    "test": "node --test --test-concurrency=1"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -20,7 +23,11 @@
     "sqlite3": "^6.0.1"
   },
   "devDependencies": {
-    "puppeteer-core": "^25.5.0"
+    "@capacitor/android": "^8.5.2",
+    "@capacitor/cli": "^8.5.2",
+    "@capacitor/core": "^8.5.2",
+    "puppeteer-core": "^25.5.0",
+    "tailwindcss": "^3.4.17"
   },
   "engines": {
     "node": ">=16.0.0"

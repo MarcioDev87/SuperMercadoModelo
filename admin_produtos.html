@@ -8,38 +8,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
-  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/tailwind.css">
   <link rel="stylesheet" href="assets/modelo-tokens.css">
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            brand: {
-              green: '#15803d',
-              greenHover: '#166534',
-              greenLight: '#22c55e',
-              orange: '#ea580c',
-              orangeHover: '#c2410c',
-              yellow: '#f59e0b',
-              red: '#dc2626'
-            },
-            surface: {
-              900: '#0b1320',
-              800: '#111c2e',
-              700: '#1e2d42',
-              600: '#2c3e55'
-            }
-          },
-          fontFamily: {
-            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
-            heading: ['"Outfit"', 'sans-serif']
-          }
-        }
-      }
-    }
-  </script>
+  <script src="assets/modelo-security.js"></script>
 </head>
 <body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-16 selection:bg-brand-orange selection:text-white">
 
@@ -228,6 +199,8 @@
   <script>
     async function loadAdminProducts() {
       const tbody = document.getElementById('admin-products-tbody');
+      const token = localStorage.getItem('adminToken');
+      if (!token) return window.location.href = 'login_gestor.html';
       const q = document.getElementById('admin-search-input').value.trim();
       const cat = document.getElementById('admin-cat-filter').value;
 
@@ -248,20 +221,20 @@
         tbody.innerHTML = products.map(p => {
           const price = Number(p.price) || 0;
           const oldPrice = p.old_price ? Number(p.old_price) : null;
-          const safeImg = p.img || 'https://via.placeholder.com/100?text=Modelo';
+          const safeImg = ModeloSecurity.safeImageUrl(p.img, 'https://via.placeholder.com/100?text=Modelo');
 
           return `
             <tr class="hover:bg-slate-50 transition">
               <td class="p-3">
                 <div class="w-10 h-10 rounded-xl bg-slate-50 p-1 border border-slate-200 flex items-center justify-center overflow-hidden">
-                  <img src="${safeImg}" alt="${p.name}" class="h-full w-full object-contain">
+                  <img src="${safeImg}" alt="${ModeloSecurity.escapeHtml(p.name)}" class="h-full w-full object-contain">
                 </div>
               </td>
               <td class="p-3">
-                <span class="font-bold text-slate-900 block">${p.name}</span>
-                <span class="text-[10px] text-slate-400">Unidade: ${p.unit || 'un'}</span>
+                <span class="font-bold text-slate-900 block">${ModeloSecurity.escapeHtml(p.name)}</span>
+                <span class="text-[10px] text-slate-400">Unidade: ${ModeloSecurity.escapeHtml(p.unit || 'un')}</span>
               </td>
-              <td class="p-3 font-semibold text-brand-orange">${p.category || 'Geral'}</td>
+              <td class="p-3 font-semibold text-brand-orange">${ModeloSecurity.escapeHtml(p.category || 'Geral')}</td>
               <td class="p-3 font-extrabold text-emerald-700">R$ ${price.toFixed(2).replace('.', ',')}</td>
               <td class="p-3 text-slate-400">${oldPrice ? `R$ ${oldPrice.toFixed(2).replace('.', ',')}` : '-'}</td>
               <td class="p-3 font-bold text-slate-800">${p.stock !== undefined ? p.stock : (p.stock_quantity ?? 50)}</td>
@@ -276,6 +249,33 @@
       } catch (err) {
         tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-brand-red">Erro ao carregar catálogo.</td></tr>';
       }
+    }
+
+    async function editProduct(id) {
+      const token = localStorage.getItem('adminToken');
+      const response = await fetch(`/api/products/${encodeURIComponent(id)}`);
+      if (!response.ok) return alert('Produto não encontrado.');
+      const product = await response.json();
+      const name = prompt('Nome do produto:', product.name);
+      if (name === null) return;
+      const price = prompt('Preço de venda:', product.price);
+      if (price === null) return;
+      const stock = prompt('Estoque atual:', product.stock);
+      if (stock === null) return;
+      const save = await fetch('/api/products', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Authorization': `Bearer ${token}` },
+        body: JSON.stringify({ ...product, name, price, stock })
+      });
+      const data = await save.json();
+      if (!save.ok) return alert(data.error || 'Não foi possível salvar.');
+      await loadAdminProducts();
+    }
+
+    function handleLogout() {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      window.location.href = 'login_gestor.html';
     }
 
     document.addEventListener('DOMContentLoaded', () => {

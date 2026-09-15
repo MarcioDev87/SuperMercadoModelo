@@ -1,48 +1,84 @@
-# Super Mercado Modelo — E-Commerce & Gestão Operacional
+# Super Mercado Modelo
 
-Produto de e-commerce e gestão operacional desenvolvido com exclusividade para o **Super Mercado Modelo** (Cascavel - CE).
+Loja virtual e painel operacional para catálogo, estoque e pedidos do Super Mercado Modelo.
 
----
+## Requisitos
 
-## 🎨 Identidade Visual & Design
-- **Paleta de Cores Oficial**:
-  - **Verde Floresta (Primary)**: `#15803d` / `#166534`
-  - **Laranja Acolhedor (Secondary)**: `#ea580c` / `#c2410c`
-  - **Amarelo Sol (Accent / Destaques)**: `#f59e0b`
-  - **Vermelho Frescor (Alertas / Promoções)**: `#dc2626`
-  - **Dark Canvas (Fundo Principal)**: `#0b1320` / `#111c2e`
-- **Logo Oficial**: Embutida e referenciada a partir de `assets/logo-modelo.png`.
+- Node.js 22 para desenvolvimento local.
+- Docker Desktop ou Docker Engine com Compose para implantação.
+- JDK 21 e Android SDK 36 para gerar o APK.
 
----
+## Desenvolvimento local
 
-## 🚀 Arquitetura & Características Exclusivas
-1. **Single-Tenant / Uso Exclusivo**:
-   - Não há seleção de supermercados para os clientes. Ao entrar no app ou na loja virtual (`index.html`), o usuário já está no Super Mercado Modelo.
-   - Acesso do gestor (`login_gestor.html`) simplificado: requer apenas **Usuário/E-mail e Senha**, sem contadores de teste (trial SaaS) ou telas de onboarding genérico.
-2. **Catálogo Integrado**:
-   - 63 produtos reais e higienizados (Hortifruti, Açougue, Mercearia, Frios, Bebidas, Limpeza, Padaria).
-3. **Checkout Completo**:
-   - Sacola de compras interativa (`meu_carrinho.html`), cálculo de taxa para bairros de Cascavel, opções de pagamento (PIX, Cartão na Entrega, Dinheiro) e tela de confirmação (`pedido_confirmado.html`).
-4. **Painel do Gestor**:
-   - Monitoramento de pedidos em tempo real (`lista_de_pedidos.html`), controle de catálogo (`admin_produtos.html`), ajuste rápido de estoque (`gestao_de_estoque.html`) e integração WhatsApp (`admin_whatsapp.html`).
-
----
-
-## 💻 Como Rodar o Projeto
-
-```bash
-# 1. Instalar dependências
+```powershell
 npm install
-
-# 2. Executar suíte de testes
-npm test
-
-# 3. Iniciar servidor local
+npm run build:css
+$env:JWT_SECRET = 'um-segredo-local-com-mais-de-32-caracteres'
 npm start
 ```
 
-O servidor iniciará em `http://localhost:3051`.
-- **Vitrine do Cliente**: `http://localhost:3051/`
-- **Painel do Gestor**: `http://localhost:3051/login_gestor.html`
-  - **E-mail padrão**: `admin@supermercadomodelo.com.br`
-  - **Senha padrão**: `admin123`
+A loja fica em `http://localhost:3051` e o painel em `http://localhost:3051/login_gestor.html`.
+
+O sistema não cria senha administrativa padrão. Em um banco novo, defina `ADMIN_EMAIL` e uma `ADMIN_PASSWORD` com pelo menos 12 caracteres antes do primeiro início.
+
+## Testes
+
+```powershell
+npm run check
+npm test
+npm audit --omit=dev
+```
+
+Os testes usam um banco temporário e não alteram `data/modelo.db`.
+
+## Docker e VPS
+
+1. Copie `.env.example` para `.env`.
+2. Troque o segredo JWT, a senha do gestor, o telefone, o endereço e os demais dados da loja.
+3. Inicie o serviço:
+
+```bash
+docker compose up -d --build
+docker compose ps
+curl http://127.0.0.1:${APP_PORT:-3051}/health
+```
+
+O banco fica no volume `modelo_data`. Faça backup antes de atualizar:
+
+```bash
+docker compose stop
+docker run --rm -v super-mercado-modelo_modelo_data:/data -v "$PWD/backups:/backup" alpine \
+  sh -c 'cp /data/modelo.db /backup/modelo-$(date +%Y%m%d-%H%M%S).db'
+docker compose start
+```
+
+Na VPS, exponha o serviço por um proxy reverso com HTTPS. Mantenha a porta da aplicação fechada para acesso público direto. Depois de verificar a nova imagem, o rollback consiste em subir a tag anterior e restaurar o arquivo SQLite do backup quando houver migração incompatível.
+
+## APK Android
+
+O APK é um aplicativo Capacitor que abre o mesmo servidor web. Gere uma versão apontando para a VPS ou para um computador na mesma rede:
+
+```powershell
+.\scripts\build-android.ps1 -ServerUrl 'https://mercado.seu-dominio.com.br'
+```
+
+Para teste por Wi-Fi, use o IP local do computador, por exemplo `http://192.168.1.72:3052`. O APK fica em `android/app/build/outputs/apk/debug/app-debug.apk`.
+
+Instalação por cabo USB, com depuração USB habilitada:
+
+```powershell
+& "$env:LOCALAPPDATA\Android\Sdk\platform-tools\adb.exe" install -r .\android\app\build\outputs\apk\debug\app-debug.apk
+```
+
+A versão debug aceita HTTP para testes locais. Para distribuição, gere uma versão release assinada que aponte para HTTPS.
+
+## Regras do pedido
+
+- O cliente precisa entrar antes de finalizar.
+- O servidor calcula preço, frete e total.
+- Falta de estoque cancela a operação inteira.
+- Reenvios usam `Idempotency-Key` e não duplicam a venda.
+- Cancelamento devolve estoque uma única vez.
+- PIX nesta versão é combinado com a loja; não há confirmação bancária automática.
+
+Consulte [a especificação](docs/spec.md), [o plano](docs/plan.md), [o histórico desta atualização](docs/changes-2026-09-15.md), [o roteiro de teste real](docs/real-test-guide.md) e [as pendências de lançamento](docs/pre-launch-tasks.md).
