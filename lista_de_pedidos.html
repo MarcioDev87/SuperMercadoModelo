@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark h-full">
+<html lang="pt-BR" class="h-full">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -12,7 +12,6 @@
   <link rel="stylesheet" href="assets/modelo-tokens.css">
   <script>
     tailwind.config = {
-      darkMode: 'class',
       theme: {
         extend: {
           colors: {
@@ -24,12 +23,6 @@
               orangeHover: '#c2410c',
               yellow: '#f59e0b',
               red: '#dc2626'
-            },
-            surface: {
-              900: '#0b1320',
-              800: '#111c2e',
-              700: '#1e2d42',
-              600: '#2c3e55'
             }
           },
           fontFamily: {
@@ -43,204 +36,347 @@
   <style>
     .no-scrollbar::-webkit-scrollbar { display: none; }
     .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    
+    /* Clean custom scrollbar for horizontal Kanban */
+    .kanban-scrollbar::-webkit-scrollbar {
+      height: 8px;
+    }
+    .kanban-scrollbar::-webkit-scrollbar-track {
+      background: #e2e8f0;
+      border-radius: 9999px;
+    }
+    .kanban-scrollbar::-webkit-scrollbar-thumb {
+      background: #94a3b8;
+      border-radius: 9999px;
+    }
+    .kanban-scrollbar::-webkit-scrollbar-thumb:hover {
+      background: #64748b;
+    }
   </style>
 </head>
-<body class="bg-surface-900 text-slate-100 font-sans antialiased min-h-screen pb-20 selection:bg-brand-orange selection:text-white">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-16 selection:bg-brand-orange selection:text-white">
 
-  <!-- Navigation Drawer (Desktop Sidebar) -->
-  <aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 py-6 bg-surface-800 text-white w-64 z-50 border-r border-surface-700 overflow-y-auto no-scrollbar">
-    <div class="px-6 mb-6 flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-white p-1 shadow flex items-center justify-center border border-surface-600">
-        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+  <!-- Mobile Sidebar Drawer Backdrop -->
+  <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden transition-opacity lg:hidden"></div>
+
+  <!-- Mobile Sidebar Drawer -->
+  <div id="mobile-sidebar-drawer" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 shadow-2xl border-r border-slate-200 transform -translate-x-full transition-transform duration-200 ease-in-out flex flex-col lg:hidden">
+    <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
+          <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+        </div>
+        <div>
+          <h2 class="font-heading font-black text-sm text-slate-900">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+          <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider block">Gestão Operacional</span>
+        </div>
       </div>
-      <div class="min-w-0">
-        <h2 class="font-heading font-black text-sm text-white truncate">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
-        <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider block mt-0.5">Gestão Operacional</span>
-      </div>
+      <button onclick="toggleMobileSidebar()" class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
     </div>
 
-    <!-- Nav Items -->
-    <nav class="flex-1 px-4 space-y-1.5 text-xs font-semibold">
-      <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest px-3 py-1">Painel</div>
-      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+    <!-- Mobile Navigation Links -->
+    <nav class="flex-1 px-3 py-4 space-y-1 text-xs font-semibold overflow-y-auto">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 py-1">Painel</div>
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">dashboard</span>
         <span>Visão Geral</span>
       </a>
 
-      <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
-      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-brand-green text-white shadow">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-700 text-white font-bold shadow-xs">
         <span class="material-symbols-outlined text-lg">receipt_long</span>
         <span>Gestão de Pedidos</span>
       </a>
-      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">inventory_2</span>
         <span>Catálogo & Preços</span>
       </a>
-      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">warehouse</span>
         <span>Gestão de Estoque</span>
       </a>
 
-      <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
-      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">chat</span>
         <span>WhatsApp Automático</span>
       </a>
-      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">settings</span>
         <span>Taxas & Loja</span>
       </a>
-      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-brand-orange/10 border border-brand-orange/30 hover:bg-brand-orange/20 transition mt-2">
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-orange-50 border border-orange-200 hover:bg-orange-100 transition mt-3">
         <span class="material-symbols-outlined text-lg">storefront</span>
         <span>Abrir Loja Virtual</span>
       </a>
     </nav>
 
-    <!-- Logout -->
-    <div class="px-4 pt-4 border-t border-surface-700">
-      <button onclick="handleLogout()" class="w-full py-2.5 px-3 rounded-xl bg-surface-700 hover:bg-red-950/60 text-slate-300 hover:text-brand-red text-xs font-semibold flex items-center justify-center gap-2 transition">
+    <div class="p-4 border-t border-slate-200">
+      <button onclick="handleLogout()" class="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 text-xs font-semibold flex items-center justify-center gap-2 transition">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span>Sair do Painel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Navigation Drawer (Desktop Sidebar) -->
+  <aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 py-5 bg-white text-slate-700 w-64 z-40 border-r border-slate-200 overflow-y-auto no-scrollbar shadow-xs">
+    <div class="px-5 mb-5 flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
+        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+      </div>
+      <div class="min-w-0">
+        <h2 class="font-heading font-black text-sm text-slate-900 truncate">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+        <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider block mt-0.5">Gestão Operacional</span>
+      </div>
+    </div>
+
+    <!-- Nav Items Desktop -->
+    <nav class="flex-1 px-3 space-y-1 text-xs font-semibold">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 py-1">Painel</div>
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">dashboard</span>
+        <span>Visão Geral</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-700 text-white font-bold shadow-xs">
+        <span class="material-symbols-outlined text-lg">receipt_long</span>
+        <span>Gestão de Pedidos</span>
+      </a>
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">inventory_2</span>
+        <span>Catálogo & Preços</span>
+      </a>
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">warehouse</span>
+        <span>Gestão de Estoque</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">chat</span>
+        <span>WhatsApp Automático</span>
+      </a>
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">settings</span>
+        <span>Taxas & Loja</span>
+      </a>
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-orange-50 border border-orange-200 hover:bg-orange-100 transition mt-3">
+        <span class="material-symbols-outlined text-lg">storefront</span>
+        <span>Abrir Loja Virtual</span>
+      </a>
+    </nav>
+
+    <!-- Logout Desktop -->
+    <div class="px-3 pt-3 border-t border-slate-200">
+      <button onclick="handleLogout()" class="w-full py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-semibold flex items-center justify-center gap-2 transition">
         <span class="material-symbols-outlined text-base">logout</span>
         <span>Sair do Painel</span>
       </button>
     </div>
   </aside>
 
-  <!-- Sticky Header -->
-  <header class="sticky top-0 z-40 bg-surface-800/95 backdrop-blur-md border-b border-surface-700 px-4 lg:px-8 py-3 flex items-center justify-between lg:ml-64">
+  <!-- Sticky Top Header (Light Neutral) -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between lg:ml-64 shadow-xs">
     <div class="flex items-center gap-3">
-      <div class="h-9 w-9 rounded-xl bg-white p-1 shadow flex items-center justify-center border border-surface-600 lg:hidden">
+      <!-- Hamburger button for mobile drawer -->
+      <button onclick="toggleMobileSidebar()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 lg:hidden flex items-center justify-center transition" aria-label="Abrir Menu">
+        <span class="material-symbols-outlined text-xl">menu</span>
+      </button>
+
+      <div class="h-9 w-9 rounded-xl bg-white p-1 shadow-xs border border-slate-200 flex items-center justify-center lg:hidden shrink-0">
         <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
       </div>
       <div>
-        <h1 class="font-heading font-extrabold text-sm text-white leading-none">Gestão de Pedidos & Kanban Operacional</h1>
-        <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider">Super Mercado Modelo • Tempo Real</span>
+        <h1 class="font-heading font-black text-sm sm:text-base text-slate-900 leading-tight">Gestão de Pedidos</h1>
+        <div class="flex items-center gap-1.5 mt-0.5">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider">Super Mercado Modelo • Tempo Real</span>
+        </div>
       </div>
     </div>
 
-    <!-- Right Controls: View Switcher & Refresh -->
+    <!-- Right Controls -->
     <div class="flex items-center gap-2">
-      <!-- Search Input -->
-      <div class="relative hidden sm:block w-48 lg:w-64">
+      <!-- Live Search Input -->
+      <div class="relative hidden md:block w-44 lg:w-60">
         <span class="material-symbols-outlined absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
-        <input id="orders-search-input" oninput="filterOrders()" type="text" placeholder="Filtrar pedido ou cliente..." class="w-full h-8 pl-8 pr-3 rounded-xl bg-surface-900 border border-surface-700 text-xs text-white focus:outline-none focus:border-brand-green">
+        <input id="orders-search-input" oninput="filterOrders()" type="text" placeholder="Filtrar por nome, nº ou tel..." class="w-full h-8 pl-8 pr-3 rounded-xl bg-slate-100 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-emerald-600 transition">
       </div>
 
-      <!-- Mode Buttons -->
-      <button onclick="toggleViewMode('kanban')" id="btn-view-kanban" class="px-3 py-1.5 rounded-xl bg-brand-green text-white font-bold text-xs flex items-center gap-1 shadow">
+      <!-- Quick Scroll Controls for PC -->
+      <div class="hidden xl:flex items-center gap-1 bg-slate-100 border border-slate-200 rounded-xl p-0.5">
+        <button onclick="scrollKanban('left')" title="Deslizar para esquerda" class="p-1 rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 transition flex items-center">
+          <span class="material-symbols-outlined text-base">chevron_left</span>
+        </button>
+        <button onclick="scrollKanban('right')" title="Deslizar para direita" class="p-1 rounded-lg text-slate-600 hover:bg-white hover:text-slate-900 transition flex items-center">
+          <span class="material-symbols-outlined text-base">chevron_right</span>
+        </button>
+      </div>
+
+      <!-- Mode View Toggle -->
+      <button onclick="toggleViewMode('kanban')" id="btn-view-kanban" class="px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-xs transition">
         <span class="material-symbols-outlined text-base">view_kanban</span>
-        <span>Kanban</span>
+        <span class="hidden sm:inline">Kanban</span>
       </button>
-      <button onclick="toggleViewMode('list')" id="btn-view-list" class="px-3 py-1.5 rounded-xl bg-surface-700 text-slate-300 font-bold text-xs flex items-center gap-1 hover:text-white transition">
+      <button onclick="toggleViewMode('list')" id="btn-view-list" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 transition">
         <span class="material-symbols-outlined text-base">view_list</span>
-        <span>Lista</span>
+        <span class="hidden sm:inline">Lista</span>
       </button>
-      <button onclick="loadOrders()" title="Atualizar Pedidos" class="p-1.5 rounded-xl bg-surface-700 hover:bg-surface-600 text-slate-300 hover:text-white transition">
+
+      <!-- Refresh Button -->
+      <button onclick="loadOrders()" title="Atualizar Pedidos" class="p-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-600 transition flex items-center">
         <span class="material-symbols-outlined text-base">refresh</span>
       </button>
     </div>
   </header>
 
-  <!-- Main Content Canvas -->
-  <main class="max-w-[1600px] mx-auto p-4 space-y-4 lg:ml-64">
+  <!-- Mobile Quick Search on small screens -->
+  <div class="p-3 bg-white border-b border-slate-200 md:hidden lg:ml-64">
+    <div class="relative">
+      <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">search</span>
+      <input id="orders-search-input-mobile" oninput="syncMobileSearch(this.value)" type="text" placeholder="Filtrar por nome, nº pedido ou telefone..." class="w-full h-9 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:bg-white focus:outline-none focus:border-emerald-600">
+    </div>
+  </div>
 
-    <!-- 7-Column Kanban View Container -->
-    <div id="kanban-view-container" class="flex gap-3.5 overflow-x-auto pb-4 no-scrollbar items-start min-h-[600px]">
+  <!-- Mobile Kanban Horizontal Tabs (1-Tap Fast Jump) -->
+  <div id="mobile-kanban-tabs" class="lg:hidden sticky top-[57px] z-20 bg-white/95 backdrop-blur-md border-b border-slate-200 px-3 py-2 overflow-x-auto no-scrollbar flex gap-2">
+    <button onclick="jumpToColumn('recebido')" class="shrink-0 px-2.5 py-1 rounded-xl bg-blue-50 text-blue-700 border border-blue-200 text-[11px] font-bold flex items-center gap-1">
+      <span>1. Novos</span>
+      <span id="tab-cnt-recebido" class="px-1.5 py-0.2 bg-blue-600 text-white rounded-full text-[10px]">0</span>
+    </button>
+    <button onclick="jumpToColumn('confirmado')" class="shrink-0 px-2.5 py-1 rounded-xl bg-indigo-50 text-indigo-700 border border-indigo-200 text-[11px] font-bold flex items-center gap-1">
+      <span>2. Confirmados</span>
+      <span id="tab-cnt-confirmado" class="px-1.5 py-0.2 bg-indigo-600 text-white rounded-full text-[10px]">0</span>
+    </button>
+    <button onclick="jumpToColumn('separacao')" class="shrink-0 px-2.5 py-1 rounded-xl bg-amber-50 text-amber-800 border border-amber-200 text-[11px] font-bold flex items-center gap-1">
+      <span>3. Separação</span>
+      <span id="tab-cnt-separacao" class="px-1.5 py-0.2 bg-amber-600 text-white rounded-full text-[10px]">0</span>
+    </button>
+    <button onclick="jumpToColumn('substituicao')" class="shrink-0 px-2.5 py-1 rounded-xl bg-orange-50 text-orange-800 border border-orange-200 text-[11px] font-bold flex items-center gap-1">
+      <span>4. Troca</span>
+      <span id="tab-cnt-substituicao" class="px-1.5 py-0.2 bg-orange-600 text-white rounded-full text-[10px]">0</span>
+    </button>
+    <button onclick="jumpToColumn('pronto')" class="shrink-0 px-2.5 py-1 rounded-xl bg-purple-50 text-purple-700 border border-purple-200 text-[11px] font-bold flex items-center gap-1">
+      <span>5. Pronto</span>
+      <span id="tab-cnt-pronto" class="px-1.5 py-0.2 bg-purple-600 text-white rounded-full text-[10px]">0</span>
+    </button>
+    <button onclick="jumpToColumn('entrega')" class="shrink-0 px-2.5 py-1 rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold flex items-center gap-1">
+      <span>6. Entrega</span>
+      <span id="tab-cnt-entrega" class="px-1.5 py-0.2 bg-emerald-600 text-white rounded-full text-[10px]">0</span>
+    </button>
+    <button onclick="jumpToColumn('finalizado')" class="shrink-0 px-2.5 py-1 rounded-xl bg-slate-100 text-slate-700 border border-slate-200 text-[11px] font-bold flex items-center gap-1">
+      <span>7. Concluídos</span>
+      <span id="tab-cnt-finalizado" class="px-1.5 py-0.2 bg-slate-500 text-white rounded-full text-[10px]">0</span>
+    </button>
+  </div>
+
+  <!-- Main Content Area -->
+  <main class="w-full p-3 sm:p-5 lg:ml-64 space-y-4">
+
+    <!-- 7-Column Kanban Board (Ergonomic Proportions) -->
+    <div id="kanban-view-container" class="flex gap-3 overflow-x-auto pb-4 kanban-scrollbar items-start snap-x snap-mandatory lg:snap-none min-h-[calc(100vh-160px)]">
 
       <!-- 1. Novo Pedido (recebido) -->
-      <div class="w-72 bg-surface-800/90 border border-surface-700 rounded-3xl p-3 shrink-0 space-y-3 shadow-lg">
-        <div class="flex items-center justify-between px-2 pt-1 border-b border-surface-700 pb-2">
+      <div id="col-wrapper-recebido" class="w-[86vw] sm:w-[280px] lg:w-[245px] shrink-0 snap-center bg-slate-100/90 border border-slate-200 rounded-2xl p-2.5 space-y-2.5 shadow-xs">
+        <div class="flex items-center justify-between px-2 pt-1 border-b border-slate-200 pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-amber-400 animate-pulse"></span>
-            <span class="font-heading font-extrabold text-xs text-white">1. Novo Pedido</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-blue-500 animate-pulse"></span>
+            <span class="font-heading font-black text-xs text-slate-800">1. Novo Pedido</span>
           </div>
-          <span id="badge-cnt-recebido" class="px-2 py-0.5 rounded-full bg-surface-900 text-amber-400 font-black text-[11px]">0</span>
+          <span id="badge-cnt-recebido" class="px-2 py-0.5 rounded-full bg-white text-blue-700 border border-slate-200 font-black text-[11px] shadow-xs">0</span>
         </div>
-        <div id="col-recebido" class="space-y-2.5 min-h-[350px]"></div>
+        <div id="col-recebido" class="space-y-2.5 min-h-[250px]"></div>
       </div>
 
       <!-- 2. Confirmado (confirmado) -->
-      <div class="w-72 bg-surface-800/90 border border-surface-700 rounded-3xl p-3 shrink-0 space-y-3 shadow-lg">
-        <div class="flex items-center justify-between px-2 pt-1 border-b border-surface-700 pb-2">
+      <div id="col-wrapper-confirmado" class="w-[86vw] sm:w-[280px] lg:w-[245px] shrink-0 snap-center bg-slate-100/90 border border-slate-200 rounded-2xl p-2.5 space-y-2.5 shadow-xs">
+        <div class="flex items-center justify-between px-2 pt-1 border-b border-slate-200 pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-blue-400"></span>
-            <span class="font-heading font-extrabold text-xs text-white">2. Confirmado</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+            <span class="font-heading font-black text-xs text-slate-800">2. Confirmado</span>
           </div>
-          <span id="badge-cnt-confirmado" class="px-2 py-0.5 rounded-full bg-surface-900 text-blue-400 font-black text-[11px]">0</span>
+          <span id="badge-cnt-confirmado" class="px-2 py-0.5 rounded-full bg-white text-indigo-700 border border-slate-200 font-black text-[11px] shadow-xs">0</span>
         </div>
-        <div id="col-confirmado" class="space-y-2.5 min-h-[350px]"></div>
+        <div id="col-confirmado" class="space-y-2.5 min-h-[250px]"></div>
       </div>
 
       <!-- 3. Em Separação (separacao) -->
-      <div class="w-72 bg-surface-800/90 border border-surface-700 rounded-3xl p-3 shrink-0 space-y-3 shadow-lg">
-        <div class="flex items-center justify-between px-2 pt-1 border-b border-surface-700 pb-2">
+      <div id="col-wrapper-separacao" class="w-[86vw] sm:w-[280px] lg:w-[245px] shrink-0 snap-center bg-slate-100/90 border border-slate-200 rounded-2xl p-2.5 space-y-2.5 shadow-xs">
+        <div class="flex items-center justify-between px-2 pt-1 border-b border-slate-200 pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>
-            <span class="font-heading font-extrabold text-xs text-white">3. Em Separação</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-amber-500"></span>
+            <span class="font-heading font-black text-xs text-slate-800">3. Em Separação</span>
           </div>
-          <span id="badge-cnt-separacao" class="px-2 py-0.5 rounded-full bg-surface-900 text-indigo-400 font-black text-[11px]">0</span>
+          <span id="badge-cnt-separacao" class="px-2 py-0.5 rounded-full bg-white text-amber-800 border border-slate-200 font-black text-[11px] shadow-xs">0</span>
         </div>
-        <div id="col-separacao" class="space-y-2.5 min-h-[350px]"></div>
+        <div id="col-separacao" class="space-y-2.5 min-h-[250px]"></div>
       </div>
 
       <!-- 4. Aguardando Substituição (substituicao) -->
-      <div class="w-72 bg-surface-800/90 border border-amber-800/40 rounded-3xl p-3 shrink-0 space-y-3 shadow-lg">
-        <div class="flex items-center justify-between px-2 pt-1 border-b border-surface-700 pb-2">
+      <div id="col-wrapper-substituicao" class="w-[86vw] sm:w-[280px] lg:w-[245px] shrink-0 snap-center bg-orange-50/70 border border-orange-200 rounded-2xl p-2.5 space-y-2.5 shadow-xs">
+        <div class="flex items-center justify-between px-2 pt-1 border-b border-orange-200 pb-2">
           <div class="flex items-center gap-2">
             <span class="w-2.5 h-2.5 rounded-full bg-brand-orange animate-bounce"></span>
-            <span class="font-heading font-extrabold text-xs text-brand-orange truncate">4. Aguard. Substituição</span>
+            <span class="font-heading font-black text-xs text-orange-900 truncate">4. Aguard. Troca</span>
           </div>
-          <span id="badge-cnt-substituicao" class="px-2 py-0.5 rounded-full bg-surface-900 text-brand-orange font-black text-[11px]">0</span>
+          <span id="badge-cnt-substituicao" class="px-2 py-0.5 rounded-full bg-white text-orange-800 border border-orange-200 font-black text-[11px] shadow-xs">0</span>
         </div>
-        <div id="col-substituicao" class="space-y-2.5 min-h-[350px]"></div>
+        <div id="col-substituicao" class="space-y-2.5 min-h-[250px]"></div>
       </div>
 
       <!-- 5. Pronto / Expedição (pronto) -->
-      <div class="w-72 bg-surface-800/90 border border-surface-700 rounded-3xl p-3 shrink-0 space-y-3 shadow-lg">
-        <div class="flex items-center justify-between px-2 pt-1 border-b border-surface-700 pb-2">
+      <div id="col-wrapper-pronto" class="w-[86vw] sm:w-[280px] lg:w-[245px] shrink-0 snap-center bg-slate-100/90 border border-slate-200 rounded-2xl p-2.5 space-y-2.5 shadow-xs">
+        <div class="flex items-center justify-between px-2 pt-1 border-b border-slate-200 pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-purple-400"></span>
-            <span class="font-heading font-extrabold text-xs text-white">5. Pronto / Embalado</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+            <span class="font-heading font-black text-xs text-slate-800">5. Pronto / Caixa</span>
           </div>
-          <span id="badge-cnt-pronto" class="px-2 py-0.5 rounded-full bg-surface-900 text-purple-400 font-black text-[11px]">0</span>
+          <span id="badge-cnt-pronto" class="px-2 py-0.5 rounded-full bg-white text-purple-700 border border-slate-200 font-black text-[11px] shadow-xs">0</span>
         </div>
-        <div id="col-pronto" class="space-y-2.5 min-h-[350px]"></div>
+        <div id="col-pronto" class="space-y-2.5 min-h-[250px]"></div>
       </div>
 
       <!-- 6. Saiu para Entrega (entrega) -->
-      <div class="w-72 bg-surface-800/90 border border-surface-700 rounded-3xl p-3 shrink-0 space-y-3 shadow-lg">
-        <div class="flex items-center justify-between px-2 pt-1 border-b border-surface-700 pb-2">
+      <div id="col-wrapper-entrega" class="w-[86vw] sm:w-[280px] lg:w-[245px] shrink-0 snap-center bg-emerald-50/60 border border-emerald-200 rounded-2xl p-2.5 space-y-2.5 shadow-xs">
+        <div class="flex items-center justify-between px-2 pt-1 border-b border-emerald-200 pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-brand-greenLight"></span>
-            <span class="font-heading font-extrabold text-xs text-white">6. Saiu p/ Entrega</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-emerald-600"></span>
+            <span class="font-heading font-black text-xs text-emerald-950">6. Saiu p/ Entrega</span>
           </div>
-          <span id="badge-cnt-entrega" class="px-2 py-0.5 rounded-full bg-surface-900 text-brand-greenLight font-black text-[11px]">0</span>
+          <span id="badge-cnt-entrega" class="px-2 py-0.5 rounded-full bg-white text-emerald-700 border border-emerald-200 font-black text-[11px] shadow-xs">0</span>
         </div>
-        <div id="col-entrega" class="space-y-2.5 min-h-[350px]"></div>
+        <div id="col-entrega" class="space-y-2.5 min-h-[250px]"></div>
       </div>
 
       <!-- 7. Concluído (finalizado) -->
-      <div class="w-72 bg-surface-800/90 border border-surface-700 rounded-3xl p-3 shrink-0 space-y-3 shadow-lg">
-        <div class="flex items-center justify-between px-2 pt-1 border-b border-surface-700 pb-2">
+      <div id="col-wrapper-finalizado" class="w-[86vw] sm:w-[280px] lg:w-[245px] shrink-0 snap-center bg-slate-100/90 border border-slate-200 rounded-2xl p-2.5 space-y-2.5 shadow-xs">
+        <div class="flex items-center justify-between px-2 pt-1 border-b border-slate-200 pb-2">
           <div class="flex items-center gap-2">
-            <span class="w-2.5 h-2.5 rounded-full bg-slate-500"></span>
-            <span class="font-heading font-extrabold text-xs text-slate-300">7. Concluído</span>
+            <span class="w-2.5 h-2.5 rounded-full bg-slate-400"></span>
+            <span class="font-heading font-black text-xs text-slate-700">7. Concluído</span>
           </div>
-          <span id="badge-cnt-finalizado" class="px-2 py-0.5 rounded-full bg-surface-900 text-slate-400 font-black text-[11px]">0</span>
+          <span id="badge-cnt-finalizado" class="px-2 py-0.5 rounded-full bg-white text-slate-600 border border-slate-200 font-black text-[11px] shadow-xs">0</span>
         </div>
-        <div id="col-finalizado" class="space-y-2.5 min-h-[350px]"></div>
+        <div id="col-finalizado" class="space-y-2.5 min-h-[250px]"></div>
       </div>
 
     </div>
 
-    <!-- Alternative List View Table Container (Hidden by Default) -->
-    <div id="list-view-container" class="hidden bg-surface-800 border border-surface-700 rounded-3xl overflow-hidden shadow-xl">
-      <div class="p-4 border-b border-surface-700 flex items-center justify-between">
-        <h3 class="font-heading font-extrabold text-sm text-white">Histórico Geral de Pedidos</h3>
-        <span id="list-view-total-badge" class="px-3 py-1 rounded-full bg-surface-900 text-xs font-bold text-brand-greenLight">0 pedidos</span>
+    <!-- Alternative List View Table & Responsive Cards Container -->
+    <div id="list-view-container" class="hidden bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-sm">
+      <div class="p-4 border-b border-slate-200 flex items-center justify-between">
+        <h3 class="font-heading font-extrabold text-sm text-slate-800">Histórico Geral de Pedidos</h3>
+        <span id="list-view-total-badge" class="px-3 py-1 rounded-full bg-emerald-50 text-xs font-bold text-emerald-700 border border-emerald-200">0 pedidos</span>
       </div>
-      <div class="overflow-x-auto">
-        <table class="w-full text-left text-xs text-slate-300">
-          <thead class="bg-surface-900 text-slate-400 uppercase text-[10px] font-bold border-b border-surface-700">
+
+      <!-- Desktop Table (hidden on small mobile) -->
+      <div class="hidden sm:block overflow-x-auto">
+        <table class="w-full text-left text-xs text-slate-700">
+          <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold border-b border-slate-200">
             <tr>
               <th class="p-3">Código</th>
               <th class="p-3">Cliente</th>
@@ -251,36 +387,41 @@
               <th class="p-3 text-right">Ações</th>
             </tr>
           </thead>
-          <tbody id="list-orders-tbody" class="divide-y divide-surface-700/60 font-medium">
+          <tbody id="list-orders-tbody" class="divide-y divide-slate-200/80 font-medium">
             <!-- Dynamic rows -->
           </tbody>
         </table>
+      </div>
+
+      <!-- Mobile List Cards View (visible on mobile screens) -->
+      <div id="list-orders-mobile" class="sm:hidden divide-y divide-slate-200 p-3 space-y-3">
+        <!-- Dynamic mobile cards -->
       </div>
     </div>
 
   </main>
 
-  <!-- Modal Detalhes do Pedido & Ações Operacionais -->
-  <div id="order-details-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="w-full max-w-2xl bg-surface-800 border border-surface-700 rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4">
-      <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+  <!-- Modal Detalhes do Pedido & Ações Operacionais (Clean Light Theme) -->
+  <div id="order-details-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="w-full max-w-2xl bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
         <div>
-          <h3 id="modal-order-number" class="font-heading font-black text-xl text-white">Detalhes do Pedido #MOD-000000</h3>
-          <span id="modal-order-status-badge" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-brand-green text-white inline-block mt-1">Novo Pedido</span>
+          <h3 id="modal-order-number" class="font-heading font-black text-lg sm:text-xl text-slate-900">Detalhes do Pedido #MOD-000000</h3>
+          <span id="modal-order-status-badge" class="text-[10px] font-extrabold px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 inline-block mt-1">NOVO PEDIDO</span>
         </div>
-        <button onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-surface-700 text-slate-300 flex items-center justify-center hover:bg-surface-600 transition">
+        <button onclick="closeOrderModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition">
           <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
       <!-- Customer Info & Delivery -->
-      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-surface-900 p-4 rounded-2xl border border-surface-700">
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs bg-slate-50 p-4 rounded-xl border border-slate-200">
         <div>
           <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Cliente</div>
-          <div id="modal-customer-name" class="font-bold text-white text-sm mt-0.5">Cliente</div>
+          <div id="modal-customer-name" class="font-bold text-slate-900 text-sm mt-0.5">Cliente</div>
           <div class="mt-1 flex items-center gap-2">
-            <span id="modal-customer-phone" class="text-brand-greenLight font-mono font-bold">(85) 99999-9999</span>
-            <a id="modal-customer-wa-btn" href="#" target="_blank" class="px-2 py-0.5 rounded-md bg-green-700 hover:bg-green-600 text-white font-bold text-[10px] flex items-center gap-1 transition">
+            <span id="modal-customer-phone" class="text-emerald-700 font-mono font-bold text-xs">(85) 99999-9999</span>
+            <a id="modal-customer-wa-btn" href="#" target="_blank" class="px-2 py-0.5 rounded-md bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-[10px] flex items-center gap-1 transition shadow-xs">
               <span class="material-symbols-outlined text-xs">chat</span> WhatsApp
             </a>
           </div>
@@ -288,126 +429,126 @@
 
         <div>
           <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider">Modalidade & Endereço</div>
-          <div id="modal-delivery-info" class="font-bold text-white text-sm mt-0.5">Entrega em Domicílio 🛵</div>
-          <div id="modal-customer-address" class="text-slate-300 text-xs mt-1 leading-snug">Av. Principal, Centro, Cascavel - CE</div>
+          <div id="modal-delivery-info" class="font-bold text-slate-900 text-sm mt-0.5">Entrega em Domicílio 🛵</div>
+          <div id="modal-customer-address" class="text-slate-600 text-xs mt-1 leading-snug">Av. Principal, Centro, Cascavel - CE</div>
         </div>
       </div>
 
       <!-- Items List -->
       <div class="space-y-2">
-        <div class="text-xs font-bold text-slate-300 flex items-center justify-between">
+        <div class="text-xs font-bold text-slate-700 flex items-center justify-between">
           <span>Itens Solicitados na Sacola:</span>
-          <span id="modal-items-count" class="text-slate-400 font-mono text-[11px]">0 itens</span>
+          <span id="modal-items-count" class="text-slate-500 font-mono text-[11px]">0 itens</span>
         </div>
-        <div id="modal-items-list" class="space-y-2 max-h-56 overflow-y-auto no-scrollbar pr-1"></div>
+        <div id="modal-items-list" class="space-y-2 max-h-56 overflow-y-auto pr-1"></div>
       </div>
 
       <!-- Totals & Payment -->
-      <div class="pt-3 border-t border-surface-700 flex items-center justify-between text-xs">
+      <div class="pt-3 border-t border-slate-200 flex items-center justify-between text-xs">
         <div>
-          <span class="text-slate-400">Forma de Pagamento:</span>
-          <strong id="modal-payment-method" class="text-white ml-1 font-bold">PIX</strong>
+          <span class="text-slate-500">Forma de Pagamento:</span>
+          <strong id="modal-payment-method" class="text-slate-900 ml-1 font-bold">PIX</strong>
         </div>
         <div class="text-right">
-          <span class="text-slate-400 block text-[10px]">Total do Pedido:</span>
-          <span id="modal-total-amount" class="font-heading font-black text-xl text-brand-greenLight">R$ 0,00</span>
+          <span class="text-slate-500 block text-[10px]">Total do Pedido:</span>
+          <span id="modal-total-amount" class="font-heading font-black text-xl text-emerald-700">R$ 0,00</span>
         </div>
       </div>
 
       <!-- Quick Operational Action Buttons -->
-      <div class="pt-3 border-t border-surface-700 space-y-2">
-        <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-400 block">Avançar Fase Operacional:</span>
+      <div class="pt-3 border-t border-slate-200 space-y-2">
+        <span class="text-[10px] font-extrabold uppercase tracking-wider text-slate-500 block">Avançar Fase Operacional:</span>
         <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-          <button onclick="changeSelectedOrderStatus('confirmado')" class="py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs shadow transition">Confirmar</button>
-          <button onclick="changeSelectedOrderStatus('separacao')" class="py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-xs shadow transition">Em Separação</button>
-          <button onclick="openSubstitutionModal()" class="py-2.5 rounded-xl bg-brand-orange hover:bg-brand-orangeHover text-white font-bold text-xs shadow transition flex items-center justify-center gap-1">
+          <button onclick="changeSelectedOrderStatus('confirmado')" class="py-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs transition">1. Confirmar</button>
+          <button onclick="changeSelectedOrderStatus('separacao')" class="py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs shadow-xs transition">2. Em Separação</button>
+          <button onclick="openSubstitutionModal()" class="py-2.5 rounded-xl bg-brand-orange hover:bg-brand-orangeHover text-white font-bold text-xs shadow-xs transition flex items-center justify-center gap-1">
             <span class="material-symbols-outlined text-sm">swap_horiz</span>
             <span>Substituição</span>
           </button>
-          <button onclick="changeSelectedOrderStatus('pronto')" class="py-2.5 rounded-xl bg-purple-600 hover:bg-purple-500 text-white font-bold text-xs shadow transition">Pronto / Embalado</button>
-          <button onclick="changeSelectedOrderStatus('entrega')" class="py-2.5 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs shadow transition">Saiu p/ Entrega</button>
-          <button onclick="changeSelectedOrderStatus('finalizado')" class="py-2.5 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold text-xs shadow transition">Finalizar</button>
-          <button onclick="changeSelectedOrderStatus('cancelado')" class="col-span-2 py-2.5 rounded-xl bg-red-950/80 hover:bg-red-900 text-red-300 font-bold text-xs border border-red-800 transition">Cancelar Pedido</button>
+          <button onclick="changeSelectedOrderStatus('pronto')" class="py-2.5 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold text-xs shadow-xs transition">3. Pronto / Caixa</button>
+          <button onclick="changeSelectedOrderStatus('entrega')" class="py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-xs transition">4. Despachar 🛵</button>
+          <button onclick="changeSelectedOrderStatus('finalizado')" class="py-2.5 rounded-xl bg-slate-800 hover:bg-slate-900 text-white font-bold text-xs shadow-xs transition">5. Finalizar ✓</button>
+          <button onclick="changeSelectedOrderStatus('cancelado')" class="col-span-2 py-2.5 rounded-xl bg-red-50 hover:bg-red-100 text-red-700 font-bold text-xs border border-red-200 transition">Cancelar Pedido</button>
         </div>
       </div>
 
     </div>
   </div>
 
-  <!-- Modal Inteligente de Substituição de Produtos -->
-  <div id="item-substitution-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-center justify-center p-4">
-    <div class="w-full max-w-3xl bg-surface-800 border border-surface-700 rounded-3xl p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4">
+  <!-- Modal Inteligente de Substituição de Produtos (Clean Light Theme) -->
+  <div id="item-substitution-modal" class="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs hidden flex items-center justify-center p-3 sm:p-4">
+    <div class="w-full max-w-3xl bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-2xl max-h-[92vh] overflow-y-auto space-y-4">
 
-      <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+      <div class="flex items-center justify-between border-b border-slate-200 pb-3">
         <div class="flex items-center gap-3">
-          <div class="w-10 h-10 rounded-2xl bg-brand-orange/20 text-brand-orange flex items-center justify-center font-bold text-lg">
+          <div class="w-10 h-10 rounded-xl bg-orange-100 text-brand-orange flex items-center justify-center font-bold text-lg">
             <span class="material-symbols-outlined">swap_horiz</span>
           </div>
           <div>
-            <h3 class="font-heading font-black text-base text-white">Solicitar Substituição de Produto</h3>
-            <p class="text-[11px] text-slate-400">Escolha o produto substituto no catálogo do Super Mercado Modelo.</p>
+            <h3 class="font-heading font-black text-base text-slate-900">Solicitar Substituição de Produto</h3>
+            <p class="text-[11px] text-slate-500">Escolha o produto similar no catálogo do Super Mercado Modelo.</p>
           </div>
         </div>
-        <button onclick="closeSubstitutionModal()" class="w-8 h-8 rounded-full bg-surface-700 text-slate-300 flex items-center justify-center hover:bg-surface-600 transition">
+        <button onclick="closeSubstitutionModal()" class="w-8 h-8 rounded-full bg-slate-100 text-slate-500 flex items-center justify-center hover:bg-slate-200 transition">
           <span class="material-symbols-outlined text-lg">close</span>
         </button>
       </div>
 
       <!-- Item em Falta -->
-      <div class="bg-red-950/40 border border-red-800/60 rounded-2xl p-4 flex items-center justify-between gap-3 text-xs">
+      <div class="bg-red-50 border border-red-200 rounded-xl p-3.5 flex items-center justify-between gap-3 text-xs">
         <div class="flex items-center gap-3">
-          <div class="w-9 h-9 rounded-xl bg-red-500/20 text-brand-red flex items-center justify-center shrink-0">
+          <div class="w-9 h-9 rounded-lg bg-red-100 text-red-600 flex items-center justify-center shrink-0">
             <span class="material-symbols-outlined text-lg">remove_shopping_cart</span>
           </div>
           <div>
-            <span class="text-[10px] font-bold text-red-400 uppercase tracking-wider block">Item Em Falta no Pedido</span>
-            <h4 id="sub-missing-item-name" class="font-heading font-bold text-sm text-white">Produto</h4>
-            <span id="sub-missing-item-meta" class="text-[11px] text-slate-400 font-mono">1x • R$ 0,00</span>
+            <span class="text-[10px] font-bold text-red-600 uppercase tracking-wider block">Item Em Falta no Pedido</span>
+            <h4 id="sub-missing-item-name" class="font-heading font-bold text-sm text-slate-900">Produto</h4>
+            <span id="sub-missing-item-meta" class="text-[11px] text-slate-500 font-mono">1x • R$ 0,00</span>
           </div>
         </div>
-        <span class="px-3 py-1 rounded-full bg-red-500/20 text-red-300 border border-red-500/40 text-[10px] font-black shrink-0">
+        <span class="px-2.5 py-1 rounded-full bg-red-100 text-red-700 border border-red-200 text-[10px] font-black shrink-0">
           EM FALTA
         </span>
       </div>
 
       <!-- Busca de Substitutos no Catálogo Modelo -->
       <div class="space-y-2">
-        <label class="block text-xs font-bold text-slate-300">Escolha o Produto Substituto no Catálogo:</label>
+        <label class="block text-xs font-bold text-slate-700">Escolha o Produto Substituto no Catálogo:</label>
         <div class="relative">
-          <span class="material-symbols-outlined text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 text-lg">search</span>
-          <input id="sub-search-input" oninput="filterSubstitutionCandidates()" type="text" placeholder="Digite para buscar produtos no catálogo do Modelo..." class="w-full h-11 pl-10 pr-4 rounded-xl bg-surface-900 border border-surface-700 text-xs text-white focus:outline-none focus:border-brand-green transition placeholder:text-slate-500" />
+          <span class="material-symbols-outlined text-slate-400 absolute left-3 top-1/2 -translate-y-1/2 text-lg">search</span>
+          <input id="sub-search-input" oninput="filterSubstitutionCandidates()" type="text" placeholder="Buscar produtos no catálogo do Modelo..." class="w-full h-10 pl-9 pr-3 rounded-xl bg-slate-50 border border-slate-200 text-xs text-slate-800 focus:bg-white focus:outline-none focus:border-emerald-600 transition placeholder:text-slate-400" />
         </div>
       </div>
 
       <!-- Candidates Grid -->
       <div class="space-y-2">
-        <div class="text-[11px] font-semibold text-slate-400 flex items-center justify-between">
+        <div class="text-[11px] font-semibold text-slate-500 flex items-center justify-between">
           <span>Sugestões Compatíveis do Catálogo:</span>
-          <span id="sub-candidates-count" class="text-brand-greenLight font-bold">Carregando sugestões...</span>
+          <span id="sub-candidates-count" class="text-emerald-700 font-bold">Carregando sugestões...</span>
         </div>
-        <div id="sub-candidates-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2.5 max-h-56 overflow-y-auto no-scrollbar pr-1">
+        <div id="sub-candidates-list" class="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-56 overflow-y-auto pr-1">
           <!-- Populated by JS -->
         </div>
       </div>
 
       <!-- WhatsApp Preview -->
-      <div class="bg-surface-900 border border-surface-700 rounded-2xl p-4 space-y-2 text-xs">
+      <div class="bg-slate-50 border border-slate-200 rounded-xl p-3.5 space-y-2 text-xs">
         <div class="flex items-center justify-between">
-          <span class="font-bold text-slate-300 flex items-center gap-1.5">
-            <span class="material-symbols-outlined text-green-400 text-base">chat</span>
+          <span class="font-bold text-slate-700 flex items-center gap-1.5">
+            <span class="material-symbols-outlined text-emerald-600 text-base">chat</span>
             <span>Mensagem de Proposta para WhatsApp:</span>
           </span>
-          <span id="sub-customer-phone-badge" class="text-green-400 font-mono text-[11px] font-bold">(85) 99999-9999</span>
+          <span id="sub-customer-phone-badge" class="text-emerald-700 font-mono text-[11px] font-bold">(85) 99999-9999</span>
         </div>
-        <textarea id="sub-whatsapp-preview" rows="5" class="w-full p-3 rounded-xl bg-surface-800 border border-surface-700 text-slate-200 text-xs font-mono focus:outline-none focus:border-green-500 leading-relaxed"></textarea>
+        <textarea id="sub-whatsapp-preview" rows="4" class="w-full p-2.5 rounded-xl bg-white border border-slate-200 text-slate-700 text-xs font-mono focus:outline-none focus:border-emerald-600 leading-relaxed"></textarea>
       </div>
 
       <!-- Actions -->
-      <div class="pt-3 border-t border-surface-700 flex flex-col sm:flex-row gap-2">
-        <button onclick="closeSubstitutionModal()" class="py-3 px-4 rounded-xl bg-surface-700 text-slate-300 font-bold text-xs hover:bg-surface-600 transition">
+      <div class="pt-3 border-t border-slate-200 flex flex-col sm:flex-row gap-2">
+        <button onclick="closeSubstitutionModal()" class="py-2.5 px-4 rounded-xl bg-slate-100 text-slate-700 font-bold text-xs hover:bg-slate-200 transition">
           Cancelar
         </button>
-        <button onclick="sendSubstitutionProposal()" class="flex-1 py-3 px-4 rounded-xl bg-green-600 hover:bg-green-500 text-white font-bold text-xs shadow-lg shadow-green-600/20 transition flex items-center justify-center gap-2">
+        <button onclick="sendSubstitutionProposal()" class="flex-1 py-2.5 px-4 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm transition flex items-center justify-center gap-2">
           <span class="material-symbols-outlined text-base">send</span>
           <span>Enviar via WhatsApp & Atualizar Status</span>
         </button>
@@ -424,6 +565,37 @@
     let currentMissingItem = null;
     let currentSelectedSubstitute = null;
     let currentViewMode = 'kanban';
+
+    function toggleMobileSidebar() {
+      const drawer = document.getElementById('mobile-sidebar-drawer');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      const isOpen = !drawer.classList.contains('-translate-x-full');
+      if (isOpen) {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      } else {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      }
+    }
+
+    function scrollKanban(dir) {
+      const container = document.getElementById('kanban-view-container');
+      const offset = dir === 'left' ? -350 : 350;
+      container.scrollBy({ left: offset, behavior: 'smooth' });
+    }
+
+    function jumpToColumn(statusKey) {
+      const col = document.getElementById(`col-wrapper-${statusKey}`);
+      if (col) {
+        col.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+      }
+    }
+
+    function syncMobileSearch(val) {
+      document.getElementById('orders-search-input').value = val;
+      filterOrders();
+    }
 
     function timeAgo(dateString) {
       if (!dateString) return 'Recentemente';
@@ -483,6 +655,7 @@
       columns.forEach(st => {
         const colEl = document.getElementById(`col-${st}`);
         const badgeEl = document.getElementById(`badge-cnt-${st}`);
+        const tabEl = document.getElementById(`tab-cnt-${st}`);
 
         const colOrders = orders.filter(o => {
           const s = (o.status || 'recebido').toLowerCase();
@@ -495,10 +668,11 @@
         });
 
         if (badgeEl) badgeEl.innerText = colOrders.length;
+        if (tabEl) tabEl.innerText = colOrders.length;
         if (!colEl) return;
 
         if (colOrders.length === 0) {
-          colEl.innerHTML = `<div class="py-10 text-center text-slate-500 text-xs font-medium">Nenhum pedido</div>`;
+          colEl.innerHTML = `<div class="py-8 text-center text-slate-400 text-xs font-medium">Nenhum pedido</div>`;
           return;
         }
 
@@ -519,32 +693,37 @@
           else if (st === 'entrega') { nextActionLabel = 'Concluir ✓'; nextActionStatus = 'finalizado'; }
 
           return `
-            <div class="bg-surface-900 border border-surface-700 hover:border-brand-green/70 rounded-2xl p-3.5 shadow transition space-y-2.5">
-              <div class="flex items-center justify-between border-b border-surface-700/60 pb-2">
-                <span class="font-heading font-black text-xs text-white">${o.order_number || '#' + o.id}</span>
-                <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg ${isPickup ? 'bg-purple-950/80 text-purple-300 border border-purple-800' : 'bg-brand-green/20 text-brand-greenLight border border-brand-green/40'}">
+            <div class="bg-white border border-slate-200 hover:border-emerald-500 rounded-xl p-3 shadow-xs hover:shadow-sm transition space-y-2">
+              <div class="flex items-center justify-between border-b border-slate-100 pb-1.5">
+                <span class="font-heading font-black text-xs text-slate-900">${o.order_number || '#' + o.id}</span>
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-lg ${isPickup ? 'bg-purple-50 text-purple-700 border border-purple-200' : 'bg-emerald-50 text-emerald-700 border border-emerald-200'}">
                   ${isPickup ? 'Retirada 🛍️' : 'Entrega 🛵'}
                 </span>
               </div>
 
               <div class="cursor-pointer" onclick="openOrderModal(${o.id})">
-                <div class="font-bold text-xs text-slate-100 truncate hover:text-brand-greenLight transition">${o.customer_name || 'Cliente'}</div>
-                <div class="text-[11px] text-slate-400 truncate mt-0.5">${o.delivery_bairro || 'Centro'} • Cascavel</div>
+                <div class="font-bold text-xs text-slate-900 truncate hover:text-emerald-700 transition">${o.customer_name || 'Cliente'}</div>
+                <div class="text-[11px] text-slate-500 truncate mt-0.5">${o.delivery_bairro || 'Centro'} • Cascavel</div>
               </div>
 
-              <div class="flex items-center justify-between pt-1 text-xs">
-                <span class="text-slate-400 font-mono text-[11px]">${itemsCount} ${itemsCount === 1 ? 'item' : 'itens'}</span>
-                <span class="font-heading font-black text-sm text-brand-greenLight">R$ ${totalNum.toFixed(2).replace('.', ',')}</span>
+              <div class="flex items-center justify-between pt-0.5 text-xs">
+                <span class="text-slate-500 font-mono text-[11px]">${itemsCount} ${itemsCount === 1 ? 'item' : 'itens'}</span>
+                <span class="font-heading font-black text-sm text-emerald-700">R$ ${totalNum.toFixed(2).replace('.', ',')}</span>
               </div>
 
-              <div class="flex items-center justify-between pt-1.5 border-t border-surface-700/60 text-[10px]">
-                <span class="text-slate-500 font-semibold">${timeAgo(o.created_at)}</span>
+              <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-[10px]">
+                <span class="text-slate-400 font-semibold">${timeAgo(o.created_at)}</span>
                 <div class="flex items-center gap-1.5">
-                  <button onclick="openOrderModal(${o.id})" class="px-2 py-1 rounded-lg bg-surface-800 hover:bg-surface-700 text-slate-300 font-bold transition">
+                  <button onclick="openOrderModal(${o.id})" class="px-2 py-1 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold transition">
                     Detalhes
                   </button>
+                  ${st === 'separacao' ? `
+                    <button onclick="openOrderModal(${o.id}); openSubstitutionModal();" class="px-2 py-1 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 font-bold transition">
+                      Troca ⚠️
+                    </button>
+                  ` : ''}
                   ${st !== 'finalizado' ? `
-                    <button onclick="quickUpdateStatus(${o.id}, '${nextActionStatus}', event)" class="px-2.5 py-1 rounded-lg bg-brand-green hover:bg-brand-greenHover text-white font-bold transition shadow-sm">
+                    <button onclick="quickUpdateStatus(${o.id}, '${nextActionStatus}', event)" class="px-2.5 py-1 rounded-lg bg-emerald-700 hover:bg-emerald-800 text-white font-bold transition shadow-xs">
                       ${nextActionLabel}
                     </button>
                   ` : ''}
@@ -558,41 +737,80 @@
 
     function renderList(orders) {
       const tbody = document.getElementById('list-orders-tbody');
+      const mobileList = document.getElementById('list-orders-mobile');
       const totalBadge = document.getElementById('list-view-total-badge');
       if (totalBadge) totalBadge.innerText = `${orders.length} pedidos`;
 
       if (!orders || orders.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400">Nenhum pedido encontrado.</td></tr>';
+        if (tbody) tbody.innerHTML = '<tr><td colspan="7" class="p-8 text-center text-slate-400">Nenhum pedido encontrado.</td></tr>';
+        if (mobileList) mobileList.innerHTML = '<div class="p-6 text-center text-slate-400 text-xs">Nenhum pedido encontrado.</div>';
         return;
       }
 
-      tbody.innerHTML = orders.map(o => {
-        const total = Number(o.total_amount || o.total) || 0;
-        const itemsCount = o.items_count !== undefined ? o.items_count : (o.items ? o.items.length : 0);
+      // Desktop rows
+      if (tbody) {
+        tbody.innerHTML = orders.map(o => {
+          const total = Number(o.total_amount || o.total) || 0;
+          const itemsCount = o.items_count !== undefined ? o.items_count : (o.items ? o.items.length : 0);
 
-        return `
-          <tr class="hover:bg-surface-700/40 transition">
-            <td class="p-3 font-heading font-bold text-white">${o.order_number}</td>
-            <td class="p-3">
-              <span class="font-bold text-white block">${o.customer_name}</span>
-              <span class="text-[10px] text-slate-400">${o.customer_phone}</span>
-            </td>
-            <td class="p-3 text-slate-300">${o.delivery_bairro || 'Centro'}</td>
-            <td class="p-3 text-slate-400 font-mono">${itemsCount} itens</td>
-            <td class="p-3 font-bold text-brand-greenLight">R$ ${total.toFixed(2).replace('.', ',')}</td>
-            <td class="p-3">
-              <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-surface-900 text-brand-orange border border-surface-700">
-                ${o.status}
-              </span>
-            </td>
-            <td class="p-3 text-right">
-              <button onclick="openOrderModal(${o.id})" class="px-3 py-1.5 rounded-xl bg-surface-700 hover:bg-brand-green text-white font-bold text-xs transition">
-                Abrir Detalhes
-              </button>
-            </td>
-          </tr>
-        `;
-      }).join('');
+          return `
+            <tr class="hover:bg-slate-50 transition">
+              <td class="p-3 font-heading font-bold text-slate-900">${o.order_number}</td>
+              <td class="p-3">
+                <span class="font-bold text-slate-900 block">${o.customer_name}</span>
+                <span class="text-[10px] text-slate-500">${o.customer_phone}</span>
+              </td>
+              <td class="p-3 text-slate-600">${o.delivery_bairro || 'Centro'}</td>
+              <td class="p-3 text-slate-500 font-mono">${itemsCount} itens</td>
+              <td class="p-3 font-bold text-emerald-700">R$ ${total.toFixed(2).replace('.', ',')}</td>
+              <td class="p-3">
+                <span class="px-2.5 py-1 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-700 border border-slate-200">
+                  ${o.status}
+                </span>
+              </td>
+              <td class="p-3 text-right">
+                <button onclick="openOrderModal(${o.id})" class="px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-emerald-700 hover:text-white text-slate-700 font-bold text-xs transition">
+                  Abrir Detalhes
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      }
+
+      // Mobile cards
+      if (mobileList) {
+        mobileList.innerHTML = orders.map(o => {
+          const total = Number(o.total_amount || o.total) || 0;
+          const itemsCount = o.items_count !== undefined ? o.items_count : (o.items ? o.items.length : 0);
+
+          return `
+            <div class="bg-white border border-slate-200 rounded-xl p-3.5 space-y-2 shadow-xs">
+              <div class="flex items-center justify-between">
+                <span class="font-heading font-black text-xs text-slate-900">${o.order_number}</span>
+                <span class="px-2 py-0.5 rounded-full text-[10px] font-black uppercase bg-slate-100 text-slate-700 border border-slate-200">
+                  ${o.status}
+                </span>
+              </div>
+              <div class="flex items-center justify-between text-xs">
+                <div>
+                  <h4 class="font-bold text-slate-900">${o.customer_name}</h4>
+                  <span class="text-[11px] text-slate-500">${o.delivery_bairro || 'Centro'}</span>
+                </div>
+                <div class="text-right">
+                  <span class="font-black text-sm text-emerald-700 block">R$ ${total.toFixed(2).replace('.', ',')}</span>
+                  <span class="text-[10px] text-slate-400 font-mono">${itemsCount} itens</span>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-slate-100 flex items-center justify-end">
+                <button onclick="openOrderModal(${o.id})" class="px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-bold text-xs shadow-xs">
+                  Ver Pedido
+                </button>
+              </div>
+            </div>
+          `;
+        }).join('');
+      }
     }
 
     function toggleViewMode(mode) {
@@ -601,17 +819,20 @@
       const btnList = document.getElementById('btn-view-list');
       const kanbanContainer = document.getElementById('kanban-view-container');
       const listContainer = document.getElementById('list-view-container');
+      const mobileTabs = document.getElementById('mobile-kanban-tabs');
 
       if (mode === 'list') {
-        btnList.className = 'px-3 py-1.5 rounded-xl bg-brand-green text-white font-bold text-xs flex items-center gap-1 shadow';
-        btnKanban.className = 'px-3 py-1.5 rounded-xl bg-surface-700 text-slate-300 font-bold text-xs flex items-center gap-1 hover:text-white transition';
+        btnList.className = 'px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-xs';
+        btnKanban.className = 'px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 transition';
         kanbanContainer.classList.add('hidden');
         listContainer.classList.remove('hidden');
+        if (mobileTabs) mobileTabs.classList.add('hidden');
       } else {
-        btnKanban.className = 'px-3 py-1.5 rounded-xl bg-brand-green text-white font-bold text-xs flex items-center gap-1 shadow';
-        btnList.className = 'px-3 py-1.5 rounded-xl bg-surface-700 text-slate-300 font-bold text-xs flex items-center gap-1 hover:text-white transition';
+        btnKanban.className = 'px-3 py-1.5 rounded-xl bg-emerald-700 text-white font-bold text-xs flex items-center gap-1 shadow-xs';
+        btnList.className = 'px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold text-xs flex items-center gap-1 transition';
         kanbanContainer.classList.remove('hidden');
         listContainer.classList.add('hidden');
+        if (mobileTabs) mobileTabs.classList.remove('hidden');
       }
       filterOrders();
     }
@@ -640,7 +861,6 @@
 
       const token = localStorage.getItem('adminToken');
 
-      // Fetch fresh order details with items
       try {
         const res = await fetch(`/api/orders/${id}`, {
           headers: { 'Authorization': `Bearer ${token}` }
@@ -659,7 +879,7 @@
 
       const rawPhone = (selectedOrder.customer_phone || '').replace(/\D/g, '');
       const cleanPhone = rawPhone.length === 10 || rawPhone.length === 11 ? '55' + rawPhone : rawPhone;
-      document.getElementById('modal-customer-wa-btn').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Olá, aqui é do Super Mercado Modelo sobre o seu pedido ' + selectedOrder.order_number)}`;
+      document.getElementById('modal-customer-wa-btn').href = `https://wa.me/${cleanPhone}?text=${encodeURIComponent('Olá, aqui é do Super Mercado Modelo sobre o seu pedido ' + (selectedOrder.order_number || ''))}`;
 
       document.getElementById('modal-delivery-info').innerText = selectedOrder.delivery_type === 'retirada' ? 'Retirada na Loja 🛍️' : 'Entrega em Domicílio 🛵';
       document.getElementById('modal-customer-address').innerText = selectedOrder.delivery_address || 'Cascavel - CE';
@@ -681,14 +901,14 @@
           const totalItem = Number(it.total_price) || (qty * unitPrice);
 
           return `
-            <div class="flex items-center justify-between bg-surface-900 p-2.5 rounded-xl border border-surface-700 text-xs">
+            <div class="flex items-center justify-between bg-slate-50 p-2.5 rounded-xl border border-slate-200 text-xs">
               <div>
-                <span class="font-bold text-white block">${qty}x ${it.product_name || it.name}</span>
-                <span class="text-[10px] text-slate-400 font-mono">Un: R$ ${unitPrice.toFixed(2).replace('.', ',')} ${it.unit ? '/ ' + it.unit : ''}</span>
+                <span class="font-bold text-slate-900 block">${qty}x ${it.product_name || it.name}</span>
+                <span class="text-[10px] text-slate-500 font-mono">Un: R$ ${unitPrice.toFixed(2).replace('.', ',')} ${it.unit ? '/ ' + it.unit : ''}</span>
               </div>
               <div class="flex items-center gap-2">
-                <span class="font-bold text-brand-greenLight">R$ ${totalItem.toFixed(2).replace('.', ',')}</span>
-                <button onclick="openSubstitutionModalForItem('${it.product_id || it.id || 'item-' + idx}', '${(it.product_name || it.name || '').replace(/'/g, "\\'")}', ${unitPrice}, ${qty})" class="px-2 py-1 rounded-lg bg-brand-orange/20 hover:bg-brand-orange text-brand-orange hover:text-white border border-brand-orange/40 text-[10px] font-bold transition flex items-center gap-1">
+                <span class="font-bold text-emerald-700">R$ ${totalItem.toFixed(2).replace('.', ',')}</span>
+                <button onclick="openSubstitutionModalForItem('${it.product_id || it.id || 'item-' + idx}', '${(it.product_name || it.name || '').replace(/'/g, "\\'")}', ${unitPrice}, ${qty})" class="px-2 py-1 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 border border-orange-200 text-[10px] font-bold transition flex items-center gap-1">
                   <span class="material-symbols-outlined text-xs">swap_horiz</span>
                   <span>Substituir</span>
                 </button>
@@ -818,8 +1038,8 @@
 
       if (candidates.length === 0) {
         container.innerHTML = `
-          <div class="col-span-2 py-6 text-center text-slate-500 text-xs">
-            <span class="material-symbols-outlined text-2xl mb-1 text-slate-600">search_off</span>
+          <div class="col-span-2 py-6 text-center text-slate-400 text-xs">
+            <span class="material-symbols-outlined text-2xl mb-1 text-slate-300">search_off</span>
             <p>Nenhum produto similar encontrado no catálogo.</p>
           </div>
         `;
@@ -831,32 +1051,32 @@
         const diff = (parseFloat(p.price) || 0) - (currentMissingItem ? currentMissingItem.price : 0);
 
         let diffLabel = 'Mesmo preço';
-        let diffClass = 'text-slate-400';
+        let diffClass = 'text-slate-500';
         if (diff > 0) {
           diffLabel = `+ R$ ${diff.toFixed(2).replace('.', ',')}`;
           diffClass = 'text-brand-orange font-bold';
         } else if (diff < 0) {
           diffLabel = `- R$ ${Math.abs(diff).toFixed(2).replace('.', ',')}`;
-          diffClass = 'text-brand-greenLight font-bold';
+          diffClass = 'text-emerald-700 font-bold';
         }
 
-        const borderStyle = isSelected ? 'border-brand-green bg-surface-900 ring-1 ring-brand-green' : 'border-surface-700 bg-surface-900 hover:border-surface-600';
+        const borderStyle = isSelected ? 'border-emerald-600 bg-emerald-50/50 ring-1 ring-emerald-600' : 'border-slate-200 bg-slate-50 hover:border-slate-300';
 
         return `
-          <div onclick="selectSubstituteCandidate('${p.id}')" class="cursor-pointer border rounded-2xl p-2.5 flex items-center justify-between gap-3 transition ${borderStyle}">
-            <div class="w-10 h-10 rounded-xl bg-surface-800 p-0.5 border border-surface-700 shrink-0 flex items-center justify-center overflow-hidden">
+          <div onclick="selectSubstituteCandidate('${p.id}')" class="cursor-pointer border rounded-xl p-2.5 flex items-center justify-between gap-3 transition ${borderStyle}">
+            <div class="w-10 h-10 rounded-lg bg-white p-0.5 border border-slate-200 shrink-0 flex items-center justify-center overflow-hidden">
               <img src="${p.img || 'https://via.placeholder.com/80'}" alt="${p.name}" class="w-full h-full object-contain" />
             </div>
 
             <div class="flex-1 min-w-0">
-              <h5 class="font-bold text-xs text-white truncate">${p.name}</h5>
+              <h5 class="font-bold text-xs text-slate-900 truncate">${p.name}</h5>
               <div class="flex items-center gap-2 mt-0.5 text-[10px]">
-                <span class="font-black text-brand-greenLight">R$ ${(parseFloat(p.price) || 0).toFixed(2).replace('.', ',')}</span>
+                <span class="font-black text-emerald-700">R$ ${(parseFloat(p.price) || 0).toFixed(2).replace('.', ',')}</span>
                 <span class="${diffClass}">${diffLabel}</span>
               </div>
             </div>
 
-            <span class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${isSelected ? 'bg-brand-green text-white' : 'bg-surface-700 text-slate-400'}">
+            <span class="w-6 h-6 rounded-full flex items-center justify-center shrink-0 ${isSelected ? 'bg-emerald-600 text-white' : 'bg-slate-200 text-slate-500'}">
               <span class="material-symbols-outlined text-sm">${isSelected ? 'check' : 'add'}</span>
             </span>
           </div>

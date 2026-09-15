@@ -1,41 +1,176 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR" class="h-full">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Configurações da Loja — Super Mercado Modelo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
   <script src="https://cdn.tailwindcss.com"></script>
   <link rel="stylesheet" href="assets/modelo-tokens.css">
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
 </head>
-<body class="bg-slate-950 text-slate-100 p-6">
-  <div class="max-w-2xl mx-auto space-y-6">
-    <div class="flex items-center gap-3 border-b border-slate-800 pb-4">
-      <a href="visao_geral.html" class="p-2 bg-slate-900 rounded-xl border border-slate-800">
-        <span class="material-symbols-outlined text-sm">arrow_back</span>
-      </a>
-      <h1 class="text-xl font-bold">Parâmetros do Super Mercado Modelo</h1>
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-16">
+
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden transition-opacity lg:hidden"></div>
+
+  <!-- Mobile Sidebar Drawer -->
+  <div id="mobile-sidebar-drawer" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 shadow-2xl border-r border-slate-200 transform -translate-x-full transition-transform duration-200 ease-in-out flex flex-col lg:hidden">
+    <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
+          <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+        </div>
+        <div>
+          <h2 class="font-heading font-black text-sm text-slate-900">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+          <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider block">Gestão Operacional</span>
+        </div>
+      </div>
+      <button onclick="toggleMobileSidebar()" class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
     </div>
-    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-6 space-y-4 text-xs">
+
+    <nav class="flex-1 px-3 py-4 space-y-1 text-xs font-semibold overflow-y-auto">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 py-1">Painel</div>
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">dashboard</span>
+        <span>Visão Geral</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">receipt_long</span>
+        <span>Gestão de Pedidos</span>
+      </a>
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">inventory_2</span>
+        <span>Catálogo & Preços</span>
+      </a>
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">warehouse</span>
+        <span>Gestão de Estoque</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">chat</span>
+        <span>WhatsApp Automático</span>
+      </a>
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-700 text-white font-bold shadow-xs">
+        <span class="material-symbols-outlined text-lg">settings</span>
+        <span>Taxas & Loja</span>
+      </a>
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-orange-50 border border-orange-200 hover:bg-orange-100 transition mt-3">
+        <span class="material-symbols-outlined text-lg">storefront</span>
+        <span>Abrir Loja Virtual</span>
+      </a>
+    </nav>
+  </div>
+
+  <!-- Sidebar Desktop -->
+  <aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 py-5 bg-white text-slate-700 w-64 z-40 border-r border-slate-200 overflow-y-auto no-scrollbar shadow-xs">
+    <div class="px-5 mb-5 flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
+        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+      </div>
+      <div class="min-w-0">
+        <h2 class="font-heading font-black text-sm text-slate-900 truncate">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+        <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider block mt-0.5">Gestão Operacional</span>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 space-y-1 text-xs font-semibold">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 py-1">Painel</div>
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">dashboard</span>
+        <span>Visão Geral</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">receipt_long</span>
+        <span>Gestão de Pedidos</span>
+      </a>
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">inventory_2</span>
+        <span>Catálogo & Preços</span>
+      </a>
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">warehouse</span>
+        <span>Gestão de Estoque</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">chat</span>
+        <span>WhatsApp Automático</span>
+      </a>
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-700 text-white font-bold shadow-xs">
+        <span class="material-symbols-outlined text-lg">settings</span>
+        <span>Taxas & Loja</span>
+      </a>
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-orange-50 border border-orange-200 hover:bg-orange-100 transition mt-3">
+        <span class="material-symbols-outlined text-lg">storefront</span>
+        <span>Abrir Loja Virtual</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Sticky Top Header -->
+  <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between lg:ml-64 shadow-xs">
+    <div class="flex items-center gap-3">
+      <button onclick="toggleMobileSidebar()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 lg:hidden flex items-center justify-center transition">
+        <span class="material-symbols-outlined text-xl">menu</span>
+      </button>
       <div>
-        <label class="font-bold text-slate-300 block mb-1">Nome Fantasia Oficial</label>
-        <input type="text" value="Super Mercado Modelo" class="w-full h-10 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white" readonly>
+        <h1 class="font-heading font-black text-sm sm:text-base text-slate-900 leading-tight">Parâmetros da Loja</h1>
+        <div class="flex items-center gap-1.5 mt-0.5">
+          <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider">Super Mercado Modelo • Configurações</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="w-full p-4 sm:p-6 lg:ml-64 max-w-2xl space-y-4">
+    <div class="bg-white border border-slate-200 rounded-2xl p-6 space-y-4 text-xs shadow-xs">
+      <div>
+        <label class="font-bold text-slate-700 block mb-1">Nome Fantasia Oficial</label>
+        <input type="text" value="Super Mercado Modelo" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold" readonly>
       </div>
       <div>
-        <label class="font-bold text-slate-300 block mb-1">Cidade / Estado</label>
-        <input type="text" value="Cascavel - CE" class="w-full h-10 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white" readonly>
+        <label class="font-bold text-slate-700 block mb-1">Cidade / Estado</label>
+        <input type="text" value="Cascavel - CE" class="w-full h-10 px-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-900 font-semibold" readonly>
       </div>
       <div>
-        <label class="font-bold text-slate-300 block mb-1">Taxa Padrão de Entrega (R$)</label>
-        <input type="number" step="0.50" value="5.00" class="w-full h-10 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white">
+        <label class="font-bold text-slate-700 block mb-1">Taxa Padrão de Entrega (R$)</label>
+        <input type="number" step="0.50" value="5.00" class="w-full h-10 px-3 rounded-xl bg-white border border-slate-200 text-slate-900 focus:outline-none focus:border-emerald-600">
       </div>
       <div>
-        <label class="font-bold text-slate-300 block mb-1">WhatsApp de Contato da Loja</label>
-        <input type="text" value="(85) 99999-9999" class="w-full h-10 px-3 rounded-xl bg-slate-950 border border-slate-700 text-white">
+        <label class="font-bold text-slate-700 block mb-1">WhatsApp de Contato da Loja</label>
+        <input type="text" value="(85) 99999-9999" class="w-full h-10 px-3 rounded-xl bg-white border border-slate-200 text-slate-900 focus:outline-none focus:border-emerald-600">
       </div>
-      <button onclick="alert('Configurações salvas!')" class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-600 text-white font-bold transition">
+      <button onclick="alert('Configurações salvas!')" class="w-full py-3 rounded-xl bg-emerald-700 hover:bg-emerald-800 text-white font-bold transition shadow-xs">
         Salvar Alterações
       </button>
     </div>
-  </div>
+  </main>
+
+  <script>
+    function toggleMobileSidebar() {
+      const drawer = document.getElementById('mobile-sidebar-drawer');
+      const backdrop = document.getElementById('mobile-sidebar-backdrop');
+      const isOpen = !drawer.classList.contains('-translate-x-full');
+      if (isOpen) {
+        drawer.classList.add('-translate-x-full');
+        backdrop.classList.add('hidden');
+      } else {
+        drawer.classList.remove('-translate-x-full');
+        backdrop.classList.remove('hidden');
+      }
+    }
+  </script>
 </body>
 </html>

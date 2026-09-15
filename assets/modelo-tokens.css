@@ -25,18 +25,30 @@
   --modelo-red-500: #ef4444;
   --modelo-red-600: #dc2626;    /* Vermelho do sorriso / badges */
 
-  /* Dark Theme Surfaces */
+  /* Light & Neutral Operational Surfaces (Default) */
+  --bg-app: #f8fafc;            /* Fundo neutro limpo (Slate-50) */
+  --surface-card: #ffffff;      /* Superfície branca pura */
+  --surface-muted: #f1f5f9;     /* Superfície secundária (Slate-100) */
+  --surface-border: #e2e8f0;    /* Bordas suaves e nítidas (Slate-200) */
+  --surface-hover: #f8fafc;     /* Hover suave */
+  
+  /* Text Colors */
+  --text-primary: #0f172a;      /* Alta legibilidade (Slate-900) */
+  --text-secondary: #475569;    /* Muted legível (Slate-600) */
+  --text-tertiary: #94a3b8;     /* Apoio (Slate-400) */
+
+  /* Dark Theme Fallbacks */
   --bg-dark: #0b1320;
   --surface-dark-card: #131f33;
   --surface-dark-border: #1e2f4d;
   --surface-dark-hover: #1c2b45;
 
   /* Typography */
-  --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  --font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  --radius-xl: 24px;
+  --radius-xl: 20px;
 }
 
 /* Base utility classes */
@@ -46,5 +58,24 @@
 .text-modelo-orange { color: var(--modelo-orange-600); }
 .bg-modelo-yellow { background-color: var(--modelo-yellow-500); }
 .text-modelo-yellow { color: var(--modelo-yellow-500); }
-.bg-modelo-dark { background-color: var(--bg-dark); }
-.border-modelo-dark { border-color: var(--surface-dark-border); }
+.bg-app-neutral { background-color: var(--bg-app); }
+.bg-surface-card { background-color: var(--surface-card); }
+.border-surface-subtle { border-color: var(--surface-border); }
+
+/* Custom Sleek Scrollbar for Kanban & Data Tables */
+.kanban-scrollbar::-webkit-scrollbar {
+  height: 8px;
+  width: 8px;
+}
+.kanban-scrollbar::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 9999px;
+}
+.kanban-scrollbar::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 9999px;
+}
+.kanban-scrollbar::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+

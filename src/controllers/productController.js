@@ -120,9 +120,30 @@ async function deleteProduct(req, res) {
   }
 }
 
+async function updateProductStock(req, res) {
+  const { stock, delta } = req.body;
+  const { id } = req.params;
+  try {
+    if (stock !== undefined) {
+      await runQuery("UPDATE products SET stock = ?, updated_at = CURRENT_TIMESTAMP WHERE id = ?", [parseFloat(stock), id]);
+    } else if (delta !== undefined) {
+      await runQuery("UPDATE products SET stock = MAX(0, stock + ?), updated_at = CURRENT_TIMESTAMP WHERE id = ?", [parseFloat(delta), id]);
+    } else {
+      return res.status(400).json({ error: 'Informe stock ou delta.' });
+    }
+    const updated = await getQuery("SELECT * FROM products WHERE id = ?", [id]);
+    return res.json({ success: true, product: updated });
+  } catch (err) {
+    console.error('updateProductStock error:', err);
+    return res.status(500).json({ error: 'Erro ao atualizar estoque.' });
+  }
+}
+
 module.exports = {
   getAllProducts,
   getProductById,
   saveProduct,
-  deleteProduct
+  deleteProduct,
+  updateProductStock
 };
+

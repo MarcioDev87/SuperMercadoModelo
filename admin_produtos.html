@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="pt-BR" class="dark">
+<html lang="pt-BR" class="h-full">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,58 +41,137 @@
     }
   </script>
 </head>
-<body class="bg-surface-900 text-slate-100 font-sans antialiased min-h-screen selection:bg-brand-orange selection:text-white">
+<body class="bg-slate-50 text-slate-800 font-sans antialiased min-h-screen pb-16 selection:bg-brand-orange selection:text-white">
 
-  <!-- Sidebar Desktop -->
-  <aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 py-6 bg-surface-800 text-white w-64 z-50 border-r border-surface-700">
-    <div class="px-6 mb-6 flex items-center gap-3">
-      <div class="h-10 w-10 rounded-xl bg-white p-1 shadow flex items-center justify-center border border-surface-600">
-        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+  <!-- Mobile Sidebar Backdrop -->
+  <div id="mobile-sidebar-backdrop" onclick="toggleMobileSidebar()" class="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 hidden transition-opacity lg:hidden"></div>
+
+  <!-- Mobile Sidebar Drawer -->
+  <div id="mobile-sidebar-drawer" class="fixed top-0 left-0 bottom-0 w-72 bg-white z-50 shadow-2xl border-r border-slate-200 transform -translate-x-full transition-transform duration-200 ease-in-out flex flex-col lg:hidden">
+    <div class="p-5 border-b border-slate-200 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
+          <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+        </div>
+        <div>
+          <h2 class="font-heading font-black text-sm text-slate-900">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+          <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider block">Gestão Operacional</span>
+        </div>
       </div>
-      <div class="min-w-0">
-        <h2 class="font-heading font-black text-sm text-white truncate">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
-        <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider block mt-0.5">Gestão Operacional</span>
-      </div>
+      <button onclick="toggleMobileSidebar()" class="p-1.5 rounded-lg text-slate-500 hover:bg-slate-100">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
     </div>
 
-    <!-- Nav Items -->
-    <nav class="flex-1 px-4 space-y-1.5 text-xs font-semibold">
-      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+    <nav class="flex-1 px-3 py-4 space-y-1 text-xs font-semibold overflow-y-auto">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 py-1">Painel</div>
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">dashboard</span>
         <span>Visão Geral</span>
       </a>
-      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">receipt_long</span>
-        <span>Pedidos em Tempo Real</span>
+        <span>Gestão de Pedidos</span>
       </a>
-      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-brand-green text-white shadow">
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-700 text-white font-bold shadow-xs">
         <span class="material-symbols-outlined text-lg">inventory_2</span>
         <span>Catálogo & Preços</span>
       </a>
-      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">warehouse</span>
         <span>Gestão de Estoque</span>
       </a>
-      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">chat</span>
         <span>WhatsApp Automático</span>
       </a>
-      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
         <span class="material-symbols-outlined text-lg">settings</span>
         <span>Taxas & Loja</span>
       </a>
-      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-brand-orange/10 border border-brand-orange/30 hover:bg-brand-orange/20 transition mt-2">
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-orange-50 border border-orange-200 hover:bg-orange-100 transition mt-3">
         <span class="material-symbols-outlined text-lg">storefront</span>
         <span>Abrir Loja Virtual</span>
       </a>
     </nav>
+
+    <div class="p-4 border-t border-slate-200">
+      <button onclick="handleLogout()" class="w-full py-2.5 px-3 rounded-xl bg-slate-100 hover:bg-red-50 text-slate-700 hover:text-red-600 text-xs font-semibold flex items-center justify-center gap-2 transition">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span>Sair do Painel</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- Sidebar Desktop -->
+  <aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 py-5 bg-white text-slate-700 w-64 z-40 border-r border-slate-200 overflow-y-auto no-scrollbar shadow-xs">
+    <div class="px-5 mb-5 flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-white p-1 shadow-sm border border-slate-200 flex items-center justify-center">
+        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+      </div>
+      <div class="min-w-0">
+        <h2 class="font-heading font-black text-sm text-slate-900 truncate">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+        <span class="text-[10px] text-emerald-700 font-bold uppercase tracking-wider block mt-0.5">Gestão Operacional</span>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 space-y-1 text-xs font-semibold">
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 py-1">Painel</div>
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">dashboard</span>
+        <span>Visão Geral</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">receipt_long</span>
+        <span>Gestão de Pedidos</span>
+      </a>
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-emerald-700 text-white font-bold shadow-xs">
+        <span class="material-symbols-outlined text-lg">inventory_2</span>
+        <span>Catálogo & Preços</span>
+      </a>
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">warehouse</span>
+        <span>Gestão de Estoque</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-400 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">chat</span>
+        <span>WhatsApp Automático</span>
+      </a>
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-600 hover:bg-slate-100 hover:text-slate-900 transition">
+        <span class="material-symbols-outlined text-lg">settings</span>
+        <span>Taxas & Loja</span>
+      </a>
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-orange-50 border border-orange-200 hover:bg-orange-100 transition mt-3">
+        <span class="material-symbols-outlined text-lg">storefront</span>
+        <span>Abrir Loja Virtual</span>
+      </a>
+    </nav>
+
+    <div class="px-3 pt-3 border-t border-slate-200">
+      <button onclick="handleLogout()" class="w-full py-2.5 px-3 rounded-xl bg-slate-50 hover:bg-red-50 text-slate-600 hover:text-red-600 text-xs font-semibold flex items-center justify-center gap-2 transition">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span>Sair do Painel</span>
+      </button>
+    </div>
   </aside>
 
   <!-- Content -->
-  <div class="lg:ml-64 flex flex-col min-h-screen">
-    <header class="sticky top-0 z-40 bg-surface-800/95 backdrop-blur-md border-b border-surface-700 px-6 py-3.5 flex items-center justify-between">
+  <div class="flex flex-col min-h-screen">
+    <header class="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200 px-4 sm:px-6 py-2.5 flex items-center justify-between lg:ml-64 shadow-xs">
+      <div class="flex items-center gap-3">
+      <button onclick="toggleMobileSidebar()" class="p-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 lg:hidden flex items-center justify-center transition">
+        <span class="material-symbols-outlined text-xl">menu</span>
+      </button>
       <div>
-        <h1 class="font-heading font-extrabold text-base text-white">Catálogo de Produtos</h1>
+        <h1 class="font-heading font-black text-sm sm:text-base text-slate-900 leading-tight">Catálogo de Produtos</h1>
         <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider">Super Mercado Modelo • 63 Itens Ativos</span>
       </div>
       <button onclick="openProductModal()" class="px-4 py-2 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs flex items-center gap-1.5 shadow transition">
@@ -101,13 +180,13 @@
       </button>
     </header>
 
-    <main class="flex-1 p-6 space-y-4 max-w-7xl w-full mx-auto">
+    <main class="flex-1 p-4 sm:p-6 space-y-4 max-w-7xl w-full mx-auto lg:ml-64">
       
       <!-- Filter and Search -->
       <div class="flex flex-col sm:flex-row items-center gap-3">
         <div class="relative flex-1 w-full">
           <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
-          <input type="text" id="admin-search-input" placeholder="Buscar por nome, categoria ou código..." class="w-full h-11 pl-10 pr-3 rounded-xl bg-surface-800 border border-surface-700 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-green">
+          <input type="text" id="admin-search-input" placeholder="Buscar por nome, categoria ou código..." class="w-full h-10 pl-10 pr-3 rounded-xl bg-white border border-slate-200 text-xs text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-emerald-600 shadow-xs">
         </div>
         <select id="admin-cat-filter" onchange="loadAdminProducts()" class="h-11 px-3 rounded-xl bg-surface-800 border border-surface-700 text-xs text-white focus:outline-none focus:border-brand-green w-full sm:w-48">
           <option value="">Todas as Categorias</option>
@@ -122,9 +201,9 @@
       </div>
 
       <!-- Products Table -->
-      <div class="bg-surface-800 border border-surface-700 rounded-3xl overflow-hidden shadow-xl">
+      <div class="bg-white border border-slate-200 rounded-2xl overflow-hidden shadow-xs">
         <table class="w-full text-left text-xs text-slate-300">
-          <thead class="bg-surface-900 text-slate-400 uppercase text-[10px] font-bold border-b border-surface-700">
+          <thead class="bg-slate-50 text-slate-500 uppercase text-[10px] font-bold border-b border-slate-200">
             <tr>
               <th class="p-3">Foto</th>
               <th class="p-3">Produto</th>
@@ -135,7 +214,7 @@
               <th class="p-3 text-right">Ações</th>
             </tr>
           </thead>
-          <tbody id="admin-products-tbody" class="divide-y divide-surface-700/60">
+          <tbody id="admin-products-tbody" class="divide-y divide-slate-200">
             <tr>
               <td colspan="7" class="p-8 text-center text-slate-400">Carregando catálogo...</td>
             </tr>
