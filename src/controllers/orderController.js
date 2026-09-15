@@ -106,9 +106,30 @@ async function createOrder(req, res) {
 
 async function listOrders(req, res) {
   try {
-    const orders = await allQuery("SELECT id, order_number, customer_name, customer_phone, delivery_type, delivery_address, delivery_bairro, delivery_city, delivery_fee, subtotal, total as total_amount, payment_method, status, notes, created_at FROM orders ORDER BY id DESC LIMIT 100");
+    const orders = await allQuery(`
+      SELECT o.*, o.total as total_amount,
+             (SELECT COUNT(*) FROM order_items oi WHERE oi.order_id = o.id) as items_count
+      FROM orders o
+      ORDER BY o.id DESC LIMIT 100
+    `);
+
+    for (const ord of orders) {
+      ord.items = await allQuery("SELECT * FROM order_items WHERE order_id = ?", [ord.id]);
+      ord.address = {
+        name: ord.customer_name,
+        phone: ord.customer_phone,
+        street: ord.delivery_address,
+        bairro: ord.delivery_bairro || 'Centro',
+        city: ord.delivery_city || 'Cascavel - CE'
+      };
+      ord.address_json = JSON.stringify(ord.address);
+      ord.items_json = JSON.stringify(ord.items);
+      ord.delivery_method = ord.delivery_type || 'entrega';
+    }
+
     return res.json(orders);
   } catch (err) {
+    console.error('listOrders error:', err);
     return res.status(500).json({ error: 'Erro ao listar pedidos.' });
   }
 }
@@ -120,6 +141,14 @@ async function getOrderDetails(req, res) {
       return res.status(404).json({ error: 'Pedido não encontrado.' });
     }
     const items = await allQuery("SELECT * FROM order_items WHERE order_id = ?", [order.id]);
+    order.items = items;
+    order.address = {
+      name: order.customer_name,
+      phone: order.customer_phone,
+      street: order.delivery_address,
+      bairro: order.delivery_bairro || 'Centro',
+      city: order.delivery_city || 'Cascavel - CE'
+    };
     return res.json({ order, items });
   } catch (err) {
     return res.status(500).json({ error: 'Erro ao buscar pedido.' });
@@ -127,19 +156,67 @@ async function getOrderDetails(req, res) {
 }
 
 async function updateOrderStatus(req, res) {
-  const { status } = req.body;
-  const upperStatus = (status || '').toUpperCase();
-  const valid = ['CRIADO', 'RECEBIDO', 'CONFIRMADO', 'SEPARACAO', 'EM_SEPARACAO', 'PRONTO', 'SAIU_ENTREGA', 'ENTREGUE', 'CANCELADO'];
-  if (!valid.includes(upperStatus)) {
-    return res.status(400).json({ error: 'Status de pedido inválido.' });
+  const rawStatus = (req.body.status || '').toLowerCase();
+  
+  // Normalize status mapping to allow both old and new conventions
+  const statusMap = {
+    'criado': 'recebido',
+    'recebido': 'recebido',
+    'confirmado': 'confirmado',
+    'separacao': 'separacao',
+    'em_separacao': 'separacao',
+    'substituicao': 'substituicao',
+    'aguardando_substituicao': 'substituicao',
+    'pronto': 'pronto',
+    'entrega': 'entrega',
+    'saiu_entrega': 'entrega',
+    'finalizado': 'finalizado',
+    'entregue': 'finalizado',
+    'cancelado': 'cancelado'
+  };
+
+  const normalizedStatus = statusMap[rawStatus] || rawStatus;
+  const valid = ['recebido', 'confirmado', 'separacao', 'substituicao', 'pronto', 'entrega', 'finalizado', 'cancelado'];
+
+  if (!valid.includes(normalizedStatus)) {
+    return res.status(400).json({ error: `Status '${rawStatus}' inválido.` });
   }
 
   try {
-    await runQuery("UPDATE orders SET status = ? WHERE id = ? OR order_number = ?", [upperStatus, req.params.id, req.params.id]);
+    await runQuery("UPDATE orders SET status = ? WHERE id = ? OR order_number = ?", [normalizedStatus, req.params.id, req.params.id]);
     const updated = await getQuery("SELECT *, total as total_amount FROM orders WHERE id = ? OR order_number = ?", [req.params.id, req.params.id]);
-    return res.json({ success: true, message: `Status atualizado para '${upperStatus}'.`, order: updated });
+    return res.json({ success: true, message: `Status atualizado para '${normalizedStatus}'.`, order: updated });
   } catch (err) {
+    console.error('updateOrderStatus error:', err);
     return res.status(500).json({ error: 'Erro ao atualizar status do pedido.' });
+  }
+}
+
+async function substituteOrderItem(req, res) {
+  const { itemId, itemName, substituteItem } = req.body;
+  try {
+    const order = await getQuery("SELECT * FROM orders WHERE id = ? OR order_number = ?", [req.params.id, req.params.id]);
+    if (!order) {
+      return res.status(404).json({ error: 'Pedido não encontrado.' });
+    }
+
+    const subNote = `[SUBSTITUIÇÃO SOLICITADA: ${itemName} -> ${substituteItem ? substituteItem.name : 'Substituto'} (R$ ${substituteItem ? substituteItem.price : ''})]`;
+    const newNotes = order.notes ? `${order.notes} | ${subNote}` : subNote;
+
+    await runQuery(
+      "UPDATE orders SET status = 'substituicao', notes = ? WHERE id = ?",
+      [newNotes, order.id]
+    );
+
+    const updated = await getQuery("SELECT *, total as total_amount FROM orders WHERE id = ?", [order.id]);
+    return res.json({
+      success: true,
+      message: 'Substituição registrada e status alterado para Aguardando Substituição.',
+      order: updated
+    });
+  } catch (err) {
+    console.error('substituteOrderItem error:', err);
+    return res.status(500).json({ error: 'Erro ao registrar substituição de produto.' });
   }
 }
 
@@ -147,5 +224,6 @@ module.exports = {
   createOrder,
   listOrders,
   getOrderDetails,
-  updateOrderStatus
+  updateOrderStatus,
+  substituteOrderItem
 };

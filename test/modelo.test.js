@@ -1,3 +1,4 @@
+process.env.NODE_ENV = 'test';
 const assert = require('assert');
 const http = require('http');
 const { app } = require('../server');
@@ -174,18 +175,18 @@ async function runTests() {
   });
 
   // 8. Order Status Update by Manager
-  await test('PATCH /api/orders/:id/status atualiza status para SAIU_ENTREGA', async () => {
+  await test('PATCH /api/orders/:id/status atualiza status para entrega', async () => {
     const res = await request(`/api/orders/${createdOrderId}/status`, {
       method: 'PATCH',
       headers: {
         'Content-Type': 'application/json',
         'Authorization': `Bearer ${adminToken}`
       },
-      body: { status: 'SAIU_ENTREGA' }
+      body: { status: 'entrega' }
     });
 
     assert.strictEqual(res.status, 200);
-    assert.strictEqual(res.body.order.status, 'SAIU_ENTREGA');
+    assert.strictEqual(res.body.order.status, 'entrega');
   });
 
   server.close();
