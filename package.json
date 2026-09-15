@@ -1,0 +1,30 @@
+{
+  "name": "super-mercado-modelo",
+  "version": "1.0.0",
+  "description": "Plataforma E-Commerce & Gestão Operacional Exclusiva — Super Mercado Modelo",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "check": "node --check server.js && node --check db.js && node --check src/config/jwt.js && node --check src/controllers/authController.js && node --check src/controllers/productController.js && node --check src/controllers/orderController.js && node --check src/controllers/evolutionController.js",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.2",
+    "express": "^4.19.2",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "jsonwebtoken": "^9.0.3",
+    "sqlite3": "^6.0.1"
+  },
+  "devDependencies": {
+    "puppeteer-core": "^25.5.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "Super Mercado Modelo Tech",
+  "license": "Proprietary"
+}

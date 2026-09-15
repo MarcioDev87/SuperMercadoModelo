@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Visão Geral da Operação — Super Mercado Modelo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/modelo-tokens.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#15803d',
+              greenHover: '#166534',
+              greenLight: '#22c55e',
+              orange: '#ea580c',
+              orangeHover: '#c2410c',
+              yellow: '#f59e0b',
+              red: '#dc2626'
+            },
+            surface: {
+              900: '#0b1320',
+              800: '#111c2e',
+              700: '#1e2d42',
+              600: '#2c3e55'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-900 text-slate-100 font-sans antialiased min-h-screen selection:bg-brand-orange selection:text-white">
+
+  <!-- Sidebar Desktop -->
+  <aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 py-6 bg-surface-800 text-white w-64 z-50 border-r border-surface-700">
+    <div class="px-6 mb-6 flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-white p-1 shadow flex items-center justify-center border border-surface-600">
+        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+      </div>
+      <div class="min-w-0">
+        <h2 class="font-heading font-black text-sm text-white truncate">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+        <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider block mt-0.5">Gestão Operacional</span>
+      </div>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 px-4 space-y-1.5 text-xs font-semibold">
+      <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest px-3 py-1">Painel</div>
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-brand-green text-white shadow">
+        <span class="material-symbols-outlined text-lg">dashboard</span>
+        <span>Visão Geral</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest px-3 pt-3 pb-1">Operação</div>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">receipt_long</span>
+        <span>Pedidos em Tempo Real</span>
+      </a>
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">inventory_2</span>
+        <span>Catálogo & Preços</span>
+      </a>
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">warehouse</span>
+        <span>Gestão de Estoque</span>
+      </a>
+
+      <div class="text-[10px] font-extrabold text-slate-500 uppercase tracking-widest px-3 pt-3 pb-1">Comunicação & Loja</div>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">chat</span>
+        <span>WhatsApp Automático</span>
+      </a>
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">settings</span>
+        <span>Taxas & Loja</span>
+      </a>
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-brand-orange/10 border border-brand-orange/30 hover:bg-brand-orange/20 transition mt-2">
+        <span class="material-symbols-outlined text-lg">storefront</span>
+        <span>Abrir Loja Virtual</span>
+      </a>
+    </nav>
+
+    <!-- Logout -->
+    <div class="px-4 pt-4 border-t border-surface-700">
+      <button onclick="logoutAdmin()" class="w-full py-2.5 px-3 rounded-xl bg-surface-700 hover:bg-red-950/60 text-slate-300 hover:text-brand-red text-xs font-semibold flex items-center justify-center gap-2 transition">
+        <span class="material-symbols-outlined text-base">logout</span>
+        <span>Sair do Painel</span>
+      </button>
+    </div>
+  </aside>
+
+  <!-- Main Container -->
+  <div class="lg:ml-64 flex flex-col min-h-screen">
+    
+    <!-- Top Header -->
+    <header class="sticky top-0 z-40 bg-surface-800/95 backdrop-blur-md border-b border-surface-700 px-6 py-3.5 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <div class="h-9 w-9 rounded-xl bg-white p-1 shadow flex items-center justify-center border border-surface-600 lg:hidden">
+          <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+        </div>
+        <div>
+          <h1 class="font-heading font-extrabold text-base text-white">Central de Operações</h1>
+          <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider">Super Mercado Modelo • Cascavel - CE</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3">
+        <div class="text-right hidden sm:block">
+          <span class="text-xs font-bold text-white block" id="admin-user-name">Gestor Modelo</span>
+          <span class="text-[10px] text-brand-orange font-semibold">Administrador Oficial</span>
+        </div>
+        <div class="w-9 h-9 rounded-xl bg-brand-green text-white flex items-center justify-center font-heading font-black text-sm">
+          M
+        </div>
+      </div>
+    </header>
+
+    <!-- Page Body -->
+    <main class="flex-1 p-6 space-y-6 max-w-7xl w-full mx-auto">
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        
+        <!-- Total Orders -->
+        <div class="bg-surface-800 border border-surface-700 rounded-2xl p-4 shadow flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-brand-green/20 text-brand-greenLight flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">receipt_long</span>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 font-semibold block">Total de Pedidos</span>
+            <span id="kpi-orders-count" class="font-heading font-black text-2xl text-white">0</span>
+          </div>
+        </div>
+
+        <!-- Total Revenue -->
+        <div class="bg-surface-800 border border-surface-700 rounded-2xl p-4 shadow flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-brand-orange/20 text-brand-orange flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">payments</span>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 font-semibold block">Faturamento Estimado</span>
+            <span id="kpi-revenue" class="font-heading font-black text-2xl text-white">R$ 0,00</span>
+          </div>
+        </div>
+
+        <!-- Low Stock Items -->
+        <div class="bg-surface-800 border border-surface-700 rounded-2xl p-4 shadow flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-amber-500/20 text-brand-yellow flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">warning</span>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 font-semibold block">Baixo Estoque</span>
+            <span id="kpi-low-stock" class="font-heading font-black text-2xl text-white">0</span>
+          </div>
+        </div>
+
+        <!-- Active Products -->
+        <div class="bg-surface-800 border border-surface-700 rounded-2xl p-4 shadow flex items-center gap-4">
+          <div class="w-12 h-12 rounded-xl bg-blue-500/20 text-blue-400 flex items-center justify-center">
+            <span class="material-symbols-outlined text-2xl">inventory_2</span>
+          </div>
+          <div>
+            <span class="text-xs text-slate-400 font-semibold block">Produtos Ativos</span>
+            <span id="kpi-active-products" class="font-heading font-black text-2xl text-white">63</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Quick Action Buttons -->
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+        <a href="admin_produtos.html" class="p-3.5 rounded-2xl bg-surface-800 border border-surface-700 hover:border-brand-green flex items-center gap-3 transition">
+          <span class="material-symbols-outlined text-brand-greenLight text-xl">add_circle</span>
+          <span class="text-xs font-bold text-white">Novo Produto</span>
+        </a>
+        <a href="lista_de_pedidos.html" class="p-3.5 rounded-2xl bg-surface-800 border border-surface-700 hover:border-brand-orange flex items-center gap-3 transition">
+          <span class="material-symbols-outlined text-brand-orange text-xl">pending_actions</span>
+          <span class="text-xs font-bold text-white">Gerenciar Pedidos</span>
+        </a>
+        <a href="gestao_de_estoque.html" class="p-3.5 rounded-2xl bg-surface-800 border border-surface-700 hover:border-brand-yellow flex items-center gap-3 transition">
+          <span class="material-symbols-outlined text-brand-yellow text-xl">warehouse</span>
+          <span class="text-xs font-bold text-white">Ajustar Estoque</span>
+        </a>
+        <a href="admin_whatsapp.html" class="p-3.5 rounded-2xl bg-surface-800 border border-surface-700 hover:border-green-400 flex items-center gap-3 transition">
+          <span class="material-symbols-outlined text-green-400 text-xl">chat</span>
+          <span class="text-xs font-bold text-white">Notificações WhatsApp</span>
+        </a>
+      </div>
+
+      <!-- Recent Orders Section -->
+      <div class="bg-surface-800 border border-surface-700 rounded-3xl p-6 shadow-xl space-y-4">
+        <div class="flex items-center justify-between">
+          <div>
+            <h3 class="font-heading font-bold text-lg text-white">Últimos Pedidos Recebidos</h3>
+            <p class="text-xs text-slate-400">Atualização em tempo real das compras de clientes no app.</p>
+          </div>
+          <a href="lista_de_pedidos.html" class="text-xs font-bold text-brand-orange hover:underline flex items-center gap-1">
+            <span>Ver todos</span>
+            <span class="material-symbols-outlined text-sm">arrow_forward</span>
+          </a>
+        </div>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-left text-xs text-slate-300">
+            <thead class="bg-surface-900 text-slate-400 uppercase text-[10px] font-bold">
+              <tr>
+                <th class="p-3 rounded-l-xl">Código</th>
+                <th class="p-3">Cliente</th>
+                <th class="p-3">Total</th>
+                <th class="p-3">Pagamento</th>
+                <th class="p-3">Status</th>
+                <th class="p-3 rounded-r-xl text-right">Ação</th>
+              </tr>
+            </thead>
+            <tbody id="recent-orders-tbody" class="divide-y divide-surface-700/60 font-medium">
+              <tr>
+                <td colspan="6" class="p-6 text-center text-slate-400">Carregando pedidos...</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    function checkManagerAuth() {
+      const token = localStorage.getItem('adminToken');
+      if (!token) {
+        window.location.href = 'login_gestor.html';
+        return;
+      }
+
+      try {
+        const userJson = localStorage.getItem('adminUser');
+        if (userJson) {
+          const user = JSON.parse(userJson);
+          document.getElementById('admin-user-name').innerText = user.name || 'Gestor Modelo';
+        }
+      } catch (e) {}
+
+      fetchDashboardData();
+    }
+
+    async function fetchDashboardData() {
+      const token = localStorage.getItem('adminToken');
+      try {
+        const res = await fetch('/api/orders', {
+          headers: { 'Authorization': `Bearer ${token}` }
+        });
+        if (res.ok) {
+          const orders = await res.json();
+          renderDashboardOrders(orders);
+        }
+
+        // Fetch products count
+        const prodRes = await fetch('/api/products?limit=1');
+        if (prodRes.ok) {
+          const totalHeader = prodRes.headers.get('X-Total-Count');
+          if (totalHeader) {
+            document.getElementById('kpi-active-products').innerText = totalHeader;
+          }
+        }
+      } catch (e) {
+        console.error('Erro ao carregar métricas:', e);
+      }
+    }
+
+    function renderDashboardOrders(orders) {
+      const tbody = document.getElementById('recent-orders-tbody');
+      const kpiOrders = document.getElementById('kpi-orders-count');
+      const kpiRev = document.getElementById('kpi-revenue');
+
+      if (!orders || orders.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="6" class="p-8 text-center text-slate-400">
+              Nenhum pedido recebido ainda. Os novos pedidos aparecerão aqui imediatamente!
+            </td>
+          </tr>
+        `;
+        kpiOrders.innerText = '0';
+        kpiRev.innerText = 'R$ 0,00';
+        return;
+      }
+
+      kpiOrders.innerText = orders.length;
+      const totalRev = orders.reduce((sum, o) => sum + (Number(o.total_amount) || 0), 0);
+      kpiRev.innerText = `R$ ${totalRev.toFixed(2).replace('.', ',')}`;
+
+      const recent = orders.slice(0, 8);
+      tbody.innerHTML = recent.map(o => {
+        const total = Number(o.total_amount) || 0;
+        let badgeColor = 'bg-amber-500/20 text-brand-yellow';
+        if (o.status === 'ENTREGUE') badgeColor = 'bg-brand-green/20 text-brand-greenLight';
+        if (o.status === 'CANCELADO') badgeColor = 'bg-red-500/20 text-brand-red';
+
+        return `
+          <tr class="hover:bg-surface-700/40 transition">
+            <td class="p-3 font-heading font-bold text-white">${o.order_number}</td>
+            <td class="p-3">
+              <span class="font-bold text-white block">${o.customer_name || 'Cliente'}</span>
+              <span class="text-[10px] text-slate-400">${o.customer_phone || ''}</span>
+            </td>
+            <td class="p-3 font-bold text-brand-greenLight">R$ ${total.toFixed(2).replace('.', ',')}</td>
+            <td class="p-3 font-semibold text-slate-300">${o.payment_method}</td>
+            <td class="p-3">
+              <span class="px-2.5 py-1 rounded-full text-[10px] font-extrabold ${badgeColor}">
+                ${o.status}
+              </span>
+            </td>
+            <td class="p-3 text-right">
+              <a href="lista_de_pedidos.html" class="px-2.5 py-1.5 rounded-lg bg-surface-700 hover:bg-brand-green text-white font-bold text-[11px] transition">
+                Detalhes
+              </a>
+            </td>
+          </tr>
+        `;
+      }).join('');
+    }
+
+    function logoutAdmin() {
+      localStorage.removeItem('adminToken');
+      localStorage.removeItem('adminUser');
+      window.location.href = 'login_gestor.html';
+    }
+
+    document.addEventListener('DOMContentLoaded', checkManagerAuth);
+  </script>
+</body>
+</html>

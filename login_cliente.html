@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Entrar ou Cadastrar — Super Mercado Modelo</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/modelo-tokens.css" />
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            modelo: {
+              green: '#15803d',
+              orange: '#ea580c',
+              yellow: '#f59e0b',
+              dark: '#0b1320',
+              card: '#131f33',
+              border: '#1e2f4d'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+  </style>
+</head>
+<body class="bg-modelo-dark text-slate-100 min-h-screen flex items-center justify-center p-4">
+  <div class="w-full max-w-md bg-modelo-card border border-modelo-border rounded-3xl p-6 md:p-8 shadow-2xl space-y-6">
+    <div class="text-center space-y-2">
+      <div class="flex justify-center mb-1">
+        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-14 w-auto object-contain" />
+      </div>
+      <h1 class="text-xl font-bold text-white">Sua conta Super Mercado Modelo</h1>
+      <p class="text-xs text-slate-400">Faça login para salvar seus pedidos e agilizar seu checkout</p>
+    </div>
+
+    <!-- Tabs -->
+    <div class="flex bg-slate-950 p-1 rounded-2xl border border-slate-800">
+      <button id="tab-login" onclick="switchTab('login')" class="flex-1 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 text-white transition">
+        Já sou cliente
+      </button>
+      <button id="tab-reg" onclick="switchTab('register')" class="flex-1 py-2.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white transition">
+        Criar cadastro
+      </button>
+    </div>
+
+    <!-- Form: Login -->
+    <form id="form-login" onsubmit="handleCustomerLogin(event)" class="space-y-4">
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">WhatsApp ou E-mail</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">alternate_email</span>
+          <input id="login-identifier" type="text" required placeholder="(85) 99999-8888 ou seu@email.com" class="w-full h-12 pl-10 pr-4 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Senha</label>
+        <div class="relative">
+          <span class="material-symbols-outlined absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-lg">lock</span>
+          <input id="login-password" type="password" required placeholder="Sua senha" class="w-full h-12 pl-10 pr-4 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+      </div>
+      <div id="login-alert" class="hidden p-3 rounded-xl bg-red-950/60 border border-red-800 text-red-300 text-xs"></div>
+      <button type="submit" id="btn-login-cust" class="w-full h-12 rounded-xl bg-emerald-600 hover:bg-emerald-500 font-bold text-sm text-white shadow-lg transition">
+        Entrar na Minha Conta
+      </button>
+    </form>
+
+    <!-- Form: Register -->
+    <form id="form-register" onsubmit="handleCustomerRegister(event)" class="space-y-3.5 hidden">
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Nome Completo *</label>
+        <input id="reg-name" type="text" required placeholder="Ex: Maria Silva" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+      </div>
+      <div class="grid grid-cols-2 gap-3">
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">WhatsApp *</label>
+          <input id="reg-phone" type="tel" required placeholder="(85) 99999-8888" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+        <div>
+          <label class="block text-xs font-semibold text-slate-300 mb-1">E-mail (opcional)</label>
+          <input id="reg-email" type="email" placeholder="seu@email.com" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+        </div>
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Bairro / Endereço de Entrega *</label>
+        <input id="reg-address" type="text" required placeholder="Ex: Av. Principal, 100 - Centro" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+      </div>
+      <div>
+        <label class="block text-xs font-semibold text-slate-300 mb-1">Crie uma Senha (mínimo 6 dígitos) *</label>
+        <input id="reg-password" type="password" required minlength="6" placeholder="••••••••" class="w-full h-11 px-3 rounded-xl bg-slate-950 border border-slate-700 text-xs text-white focus:outline-none focus:border-emerald-500" />
+      </div>
+      <div id="reg-alert" class="hidden p-3 rounded-xl bg-red-950/60 border border-red-800 text-red-300 text-xs"></div>
+      <button type="submit" id="btn-reg-cust" class="w-full h-12 rounded-xl bg-orange-600 hover:bg-orange-500 font-bold text-sm text-white shadow-lg transition">
+        Cadastrar & Fazer Compras
+      </button>
+    </form>
+
+    <div class="text-center pt-2">
+      <a href="index.html" class="text-xs text-slate-400 hover:text-emerald-400 transition">
+        ← Voltar para as compras sem login
+      </a>
+    </div>
+  </div>
+
+  <script>
+    function switchTab(tab) {
+      const formLogin = document.getElementById('form-login');
+      const formReg = document.getElementById('form-register');
+      const tabLogin = document.getElementById('tab-login');
+      const tabReg = document.getElementById('tab-reg');
+
+      if (tab === 'login') {
+        formLogin.classList.remove('hidden');
+        formReg.classList.add('hidden');
+        tabLogin.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 text-white transition';
+        tabReg.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white transition';
+      } else {
+        formLogin.classList.add('hidden');
+        formReg.classList.remove('hidden');
+        tabReg.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs bg-orange-600 text-white transition';
+        tabLogin.className = 'flex-1 py-2.5 rounded-xl font-bold text-xs text-slate-400 hover:text-white transition';
+      }
+    }
+
+    async function handleCustomerLogin(event) {
+      event.preventDefault();
+      const identifier = document.getElementById('login-identifier').value.trim();
+      const password = document.getElementById('login-password').value;
+      const alertBox = document.getElementById('login-alert');
+
+      alertBox.classList.add('hidden');
+      try {
+        const res = await fetch('/api/auth/login-customer', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: identifier, phone: identifier, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          localStorage.setItem('userToken', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('isLoggedIn', 'true');
+          window.location.href = 'index.html';
+        } else {
+          alertBox.innerText = data.error || 'Falha ao autenticar.';
+          alertBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        alertBox.innerText = 'Erro de comunicação com o servidor.';
+        alertBox.classList.remove('hidden');
+      }
+    }
+
+    async function handleCustomerRegister(event) {
+      event.preventDefault();
+      const fullname = document.getElementById('reg-name').value.trim();
+      const phone = document.getElementById('reg-phone').value.trim();
+      const email = document.getElementById('reg-email').value.trim();
+      const address = document.getElementById('reg-address').value.trim();
+      const password = document.getElementById('reg-password').value;
+      const alertBox = document.getElementById('reg-alert');
+
+      alertBox.classList.add('hidden');
+      try {
+        const res = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullname, phone, email, address, password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+          localStorage.setItem('userToken', data.token);
+          localStorage.setItem('user', JSON.stringify(data.user));
+          localStorage.setItem('isLoggedIn', 'true');
+          alert('🎉 Cadastro realizado com sucesso no Super Mercado Modelo!');
+          window.location.href = 'index.html';
+        } else {
+          alertBox.innerText = data.error || 'Erro ao realizar cadastro.';
+          alertBox.classList.remove('hidden');
+        }
+      } catch (err) {
+        alertBox.innerText = 'Erro de conexão com o servidor.';
+        alertBox.classList.remove('hidden');
+      }
+    }
+  </script>
+</body>
+</html>

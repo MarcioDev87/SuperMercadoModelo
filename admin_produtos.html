@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Catálogo & Produtos — Super Mercado Modelo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/modelo-tokens.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#15803d',
+              greenHover: '#166534',
+              greenLight: '#22c55e',
+              orange: '#ea580c',
+              orangeHover: '#c2410c',
+              yellow: '#f59e0b',
+              red: '#dc2626'
+            },
+            surface: {
+              900: '#0b1320',
+              800: '#111c2e',
+              700: '#1e2d42',
+              600: '#2c3e55'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-surface-900 text-slate-100 font-sans antialiased min-h-screen selection:bg-brand-orange selection:text-white">
+
+  <!-- Sidebar Desktop -->
+  <aside class="hidden lg:flex flex-col h-screen fixed left-0 top-0 py-6 bg-surface-800 text-white w-64 z-50 border-r border-surface-700">
+    <div class="px-6 mb-6 flex items-center gap-3">
+      <div class="h-10 w-10 rounded-xl bg-white p-1 shadow flex items-center justify-center border border-surface-600">
+        <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+      </div>
+      <div class="min-w-0">
+        <h2 class="font-heading font-black text-sm text-white truncate">Super Mercado <span class="text-brand-orange">Modelo</span></h2>
+        <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider block mt-0.5">Gestão Operacional</span>
+      </div>
+    </div>
+
+    <!-- Nav Items -->
+    <nav class="flex-1 px-4 space-y-1.5 text-xs font-semibold">
+      <a href="visao_geral.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">dashboard</span>
+        <span>Visão Geral</span>
+      </a>
+      <a href="lista_de_pedidos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">receipt_long</span>
+        <span>Pedidos em Tempo Real</span>
+      </a>
+      <a href="admin_produtos.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-brand-green text-white shadow">
+        <span class="material-symbols-outlined text-lg">inventory_2</span>
+        <span>Catálogo & Preços</span>
+      </a>
+      <a href="gestao_de_estoque.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">warehouse</span>
+        <span>Gestão de Estoque</span>
+      </a>
+      <a href="admin_whatsapp.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">chat</span>
+        <span>WhatsApp Automático</span>
+      </a>
+      <a href="configuracoes_loja.html" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-slate-300 hover:bg-surface-700 hover:text-white transition">
+        <span class="material-symbols-outlined text-lg">settings</span>
+        <span>Taxas & Loja</span>
+      </a>
+      <a href="index.html" target="_blank" class="flex items-center gap-3 px-3 py-2.5 rounded-xl text-brand-orange bg-brand-orange/10 border border-brand-orange/30 hover:bg-brand-orange/20 transition mt-2">
+        <span class="material-symbols-outlined text-lg">storefront</span>
+        <span>Abrir Loja Virtual</span>
+      </a>
+    </nav>
+  </aside>
+
+  <!-- Content -->
+  <div class="lg:ml-64 flex flex-col min-h-screen">
+    <header class="sticky top-0 z-40 bg-surface-800/95 backdrop-blur-md border-b border-surface-700 px-6 py-3.5 flex items-center justify-between">
+      <div>
+        <h1 class="font-heading font-extrabold text-base text-white">Catálogo de Produtos</h1>
+        <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider">Super Mercado Modelo • 63 Itens Ativos</span>
+      </div>
+      <button onclick="openProductModal()" class="px-4 py-2 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs flex items-center gap-1.5 shadow transition">
+        <span class="material-symbols-outlined text-base">add</span>
+        <span>Cadastrar Produto</span>
+      </button>
+    </header>
+
+    <main class="flex-1 p-6 space-y-4 max-w-7xl w-full mx-auto">
+      
+      <!-- Filter and Search -->
+      <div class="flex flex-col sm:flex-row items-center gap-3">
+        <div class="relative flex-1 w-full">
+          <span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-lg">search</span>
+          <input type="text" id="admin-search-input" placeholder="Buscar por nome, categoria ou código..." class="w-full h-11 pl-10 pr-3 rounded-xl bg-surface-800 border border-surface-700 text-xs text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-green">
+        </div>
+        <select id="admin-cat-filter" onchange="loadAdminProducts()" class="h-11 px-3 rounded-xl bg-surface-800 border border-surface-700 text-xs text-white focus:outline-none focus:border-brand-green w-full sm:w-48">
+          <option value="">Todas as Categorias</option>
+          <option value="Hortifruti">Hortifruti</option>
+          <option value="Açougue">Açougue</option>
+          <option value="Mercearia">Mercearia</option>
+          <option value="Frios">Frios</option>
+          <option value="Bebidas">Bebidas</option>
+          <option value="Limpeza">Limpeza</option>
+          <option value="Padaria">Padaria</option>
+        </select>
+      </div>
+
+      <!-- Products Table -->
+      <div class="bg-surface-800 border border-surface-700 rounded-3xl overflow-hidden shadow-xl">
+        <table class="w-full text-left text-xs text-slate-300">
+          <thead class="bg-surface-900 text-slate-400 uppercase text-[10px] font-bold border-b border-surface-700">
+            <tr>
+              <th class="p-3">Foto</th>
+              <th class="p-3">Produto</th>
+              <th class="p-3">Categoria</th>
+              <th class="p-3">Preço</th>
+              <th class="p-3">Preço Promo</th>
+              <th class="p-3">Estoque</th>
+              <th class="p-3 text-right">Ações</th>
+            </tr>
+          </thead>
+          <tbody id="admin-products-tbody" class="divide-y divide-surface-700/60">
+            <tr>
+              <td colspan="7" class="p-8 text-center text-slate-400">Carregando catálogo...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+    </main>
+  </div>
+
+  <script>
+    async function loadAdminProducts() {
+      const tbody = document.getElementById('admin-products-tbody');
+      const q = document.getElementById('admin-search-input').value.trim();
+      const cat = document.getElementById('admin-cat-filter').value;
+
+      const params = new URLSearchParams();
+      params.append('limit', '100');
+      if (q) params.append('q', q);
+      if (cat) params.append('category', cat);
+
+      try {
+        const res = await fetch(`/api/products?${params.toString()}`);
+        const products = await res.json();
+
+        if (!products || products.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400">Nenhum produto encontrado.</td></tr>';
+          return;
+        }
+
+        tbody.innerHTML = products.map(p => {
+          const price = Number(p.price) || 0;
+          const oldPrice = p.old_price ? Number(p.old_price) : null;
+          const safeImg = p.img || 'https://via.placeholder.com/100?text=Modelo';
+
+          return `
+            <tr class="hover:bg-surface-700/40 transition">
+              <td class="p-3">
+                <div class="w-10 h-10 rounded-lg bg-surface-900 p-1 border border-surface-700 flex items-center justify-center">
+                  <img src="${safeImg}" alt="${p.name}" class="h-full w-full object-contain">
+                </div>
+              </td>
+              <td class="p-3">
+                <span class="font-bold text-white block">${p.name}</span>
+                <span class="text-[10px] text-slate-400">Unidade: ${p.unit || 'un'}</span>
+              </td>
+              <td class="p-3 font-semibold text-brand-orange">${p.category || 'Geral'}</td>
+              <td class="p-3 font-extrabold text-brand-greenLight">R$ ${price.toFixed(2).replace('.', ',')}</td>
+              <td class="p-3 text-slate-400">${oldPrice ? `R$ ${oldPrice.toFixed(2).replace('.', ',')}` : '-'}</td>
+              <td class="p-3 font-bold text-white">${p.stock_quantity ?? 50}</td>
+              <td class="p-3 text-right space-x-2">
+                <button onclick="editProduct('${p.id}')" class="p-1.5 rounded-lg bg-surface-700 hover:bg-brand-green text-slate-300 hover:text-white transition">
+                  <span class="material-symbols-outlined text-base">edit</span>
+                </button>
+              </td>
+            </tr>
+          `;
+        }).join('');
+      } catch (err) {
+        tbody.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-brand-red">Erro ao carregar catálogo.</td></tr>';
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      loadAdminProducts();
+      document.getElementById('admin-search-input').addEventListener('input', () => {
+        loadAdminProducts();
+      });
+    });
+  </script>
+</body>
+</html>

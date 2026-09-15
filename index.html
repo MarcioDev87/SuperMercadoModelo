@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Super Mercado Modelo — O Melhor para Sua Família</title>
+  <meta name="description" content="Compre online no Super Mercado Modelo com entrega rápida em Cascavel - CE. Frutas, carnes, mercearia, bebidas e ofertas exclusivas!">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&family=Outfit:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="assets/modelo-tokens.css">
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            brand: {
+              green: '#15803d',
+              greenHover: '#166534',
+              greenLight: '#22c55e',
+              orange: '#ea580c',
+              orangeHover: '#c2410c',
+              yellow: '#f59e0b',
+              red: '#dc2626'
+            },
+            surface: {
+              900: '#0b1320',
+              800: '#111c2e',
+              700: '#1e2d42',
+              600: '#2c3e55'
+            }
+          },
+          fontFamily: {
+            sans: ['"Plus Jakarta Sans"', 'sans-serif'],
+            heading: ['"Outfit"', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    .category-chip.active {
+      background: linear-gradient(135deg, #15803d, #166534);
+      color: #ffffff;
+      border-color: #22c55e;
+      box-shadow: 0 4px 14px rgba(21, 128, 61, 0.35);
+    }
+  </style>
+</head>
+<body class="bg-surface-900 text-slate-100 font-sans antialiased min-h-screen pb-24 selection:bg-brand-orange selection:text-white">
+
+  <!-- Top Header Navigation -->
+  <header class="sticky top-0 z-50 bg-surface-800/95 backdrop-blur-md border-b border-surface-700/80 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 h-18 flex items-center justify-between gap-3">
+      
+      <!-- Brand Logo -->
+      <a href="index.html" class="flex items-center gap-3 group">
+        <div class="h-12 w-12 rounded-xl bg-white p-1 shadow-md flex items-center justify-center border border-surface-600 transition-transform group-hover:scale-105">
+          <img src="assets/logo-modelo.png" alt="Super Mercado Modelo" class="h-full w-full object-contain">
+        </div>
+        <div class="flex flex-col">
+          <span class="font-heading font-black text-lg tracking-tight leading-none text-white flex items-center gap-1.5">
+            Super Mercado <span class="text-brand-orange">Modelo</span>
+          </span>
+          <span class="text-[10px] text-brand-greenLight font-bold uppercase tracking-wider mt-1 flex items-center gap-1">
+            <span class="w-1.5 h-1.5 rounded-full bg-brand-greenLight animate-pulse"></span>
+            Cascavel - CE • Loja Oficial
+          </span>
+        </div>
+      </a>
+
+      <!-- Delivery Location Selector -->
+      <div onclick="openAddressModal()" class="hidden md:flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-surface-700/70 border border-surface-600 hover:border-brand-green cursor-pointer transition">
+        <span class="material-symbols-outlined text-brand-orange text-lg">location_on</span>
+        <div class="text-left leading-tight">
+          <span class="text-[9px] uppercase font-bold text-slate-400 block">Entregar em</span>
+          <span id="selected-address-text" class="text-xs font-semibold text-slate-200">Centro, Cascavel - CE</span>
+        </div>
+        <span class="material-symbols-outlined text-slate-400 text-sm">expand_more</span>
+      </div>
+
+      <!-- Right Actions: User Profile & Cart -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        
+        <!-- User Greeting / Auth -->
+        <div id="user-auth-section" class="flex items-center">
+          <a href="login_cliente.html" id="login-link-btn" class="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface-700/80 hover:bg-surface-600 border border-surface-600 text-xs font-semibold text-slate-200 transition">
+            <span class="material-symbols-outlined text-lg text-brand-yellow">account_circle</span>
+            <span id="user-greeting-name">Entrar / Cadastrar</span>
+          </a>
+        </div>
+
+        <!-- Manager Quick Portal Button -->
+        <a href="login_gestor.html" title="Painel do Gestor" class="p-2 rounded-xl bg-surface-700/60 hover:bg-surface-600 text-slate-300 hover:text-white border border-surface-600 transition flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">storefront</span>
+        </a>
+
+        <!-- Cart Button -->
+        <a href="meu_carrinho.html" class="relative p-2.5 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white shadow-md shadow-brand-green/20 transition flex items-center justify-center">
+          <span class="material-symbols-outlined text-xl">shopping_cart</span>
+          <span id="header-cart-badge" class="absolute -top-1.5 -right-1.5 bg-brand-orange text-white text-[10px] font-black w-5 h-5 rounded-full flex items-center justify-center shadow hidden">0</span>
+        </a>
+      </div>
+
+    </div>
+  </header>
+
+  <!-- Main Storefront Container -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 pt-6 space-y-6">
+
+    <!-- Search Input with Clear Button -->
+    <div class="relative">
+      <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl">search</span>
+      <input type="text" id="search-input" placeholder="Buscar no Super Mercado Modelo (ex: Arroz, Carne, Banana, Sabão)..." class="w-full h-13 pl-12 pr-12 rounded-2xl bg-surface-800 border border-surface-700 text-sm font-medium text-white placeholder:text-slate-500 focus:outline-none focus:border-brand-green focus:ring-2 focus:ring-brand-green/20 transition shadow-inner">
+      <button id="search-clear-btn" onclick="clearSearch()" class="hidden absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white">
+        <span class="material-symbols-outlined text-xl">close</span>
+      </button>
+    </div>
+
+    <!-- Promotional Auto-Rotating Carousel -->
+    <div class="relative w-full rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl border border-surface-700/60 group bg-surface-800">
+      <div id="carousel-track" class="flex transition-transform duration-700 ease-out" style="transform: translateX(0%);">
+        
+        <!-- Slide 1: Bem-Vindo ao Modelo -->
+        <div class="w-full shrink-0 relative h-48 sm:h-64 bg-gradient-to-r from-emerald-900 via-green-950 to-surface-900 flex items-center p-6 sm:p-10 overflow-hidden">
+          <div class="absolute right-0 top-0 bottom-0 w-1/2 opacity-20 bg-[radial-gradient(circle_at_center,_#22c55e_0%,_transparent_70%)]"></div>
+          <div class="relative z-10 max-w-lg space-y-2 sm:space-y-3">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-orange text-white text-[11px] font-black uppercase tracking-wider">
+              🔥 Ofertas da Semana
+            </span>
+            <h2 class="text-2xl sm:text-4xl font-heading font-black text-white leading-tight">
+              Economia de verdade no <span class="text-brand-orange">Modelo</span>!
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300">
+              Produtos frescos selecionados com carinho todos os dias para a sua mesa em Cascavel.
+            </p>
+            <button onclick="filterCategory('promo')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white text-xs font-bold shadow-lg transition transform active:scale-95">
+              <span>Ver Promoções</span>
+              <span class="material-symbols-outlined text-sm">arrow_forward</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slide 2: Hortifruti Fresquinho -->
+        <div class="w-full shrink-0 relative h-48 sm:h-64 bg-gradient-to-r from-amber-950 via-orange-950 to-surface-900 flex items-center p-6 sm:p-10 overflow-hidden">
+          <div class="relative z-10 max-w-lg space-y-2 sm:space-y-3">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-yellow text-slate-950 text-[11px] font-black uppercase tracking-wider">
+              🍎 Direto do Produtor
+            </span>
+            <h2 class="text-2xl sm:text-4xl font-heading font-black text-white leading-tight">
+              Quinta e Sexta do <span class="text-brand-yellow">Hortifruti</span>
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300">
+              Frutas, legumes e verduras rigorosamente inspecionados com preços arrasadores.
+            </p>
+            <button onclick="filterCategory('Hortifruti')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-orange hover:bg-brand-orangeHover text-white text-xs font-bold shadow-lg transition transform active:scale-95">
+              <span>Explorar Hortifruti</span>
+              <span class="material-symbols-outlined text-sm">nutrition</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Slide 3: Açougue Premium -->
+        <div class="w-full shrink-0 relative h-48 sm:h-64 bg-gradient-to-r from-red-950 via-rose-950 to-surface-900 flex items-center p-6 sm:p-10 overflow-hidden">
+          <div class="relative z-10 max-w-lg space-y-2 sm:space-y-3">
+            <span class="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-brand-red text-white text-[11px] font-black uppercase tracking-wider">
+              🥩 Carnes de Primeira
+            </span>
+            <h2 class="text-2xl sm:text-4xl font-heading font-black text-white leading-tight">
+              Açougue Especial <span class="text-brand-red">Super Modelo</span>
+            </h2>
+            <p class="text-xs sm:text-sm text-slate-300">
+              Cortes nobres, carnes moídas na hora e o padrão de higiene que você confia.
+            </p>
+            <button onclick="filterCategory('Açougue')" class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white text-xs font-bold shadow-lg transition transform active:scale-95">
+              <span>Ver Carnes</span>
+              <span class="material-symbols-outlined text-sm">restaurant</span>
+            </button>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Carousel Navigation Dots -->
+      <div class="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-2 z-20">
+        <button onclick="setSlide(0)" class="carousel-dot w-6 h-2 rounded-full bg-brand-orange transition-all"></button>
+        <button onclick="setSlide(1)" class="carousel-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white transition-all"></button>
+        <button onclick="setSlide(2)" class="carousel-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white transition-all"></button>
+      </div>
+    </div>
+
+    <!-- Category Filter Bar -->
+    <div class="space-y-2">
+      <div class="flex items-center justify-between">
+        <h3 class="font-heading font-bold text-sm text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-brand-green text-lg">category</span>
+          Navegue por Departamentos
+        </h3>
+        <button id="clear-category-btn" onclick="filterCategory(null)" class="hidden text-xs text-brand-orange hover:underline font-semibold">
+          Ver todos os departamentos
+        </button>
+      </div>
+
+      <div class="flex items-center gap-2.5 overflow-x-auto no-scrollbar py-1">
+        <button onclick="filterCategory(null)" data-cat="all" class="category-chip active shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base">apps</span>
+          Todos
+        </button>
+        <button onclick="filterCategory('promo')" data-cat="promo" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-brand-orange hover:border-brand-orange transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-brand-orange">local_fire_department</span>
+          Ofertas
+        </button>
+        <button onclick="filterCategory('Hortifruti')" data-cat="Hortifruti" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-green-400">nutrition</span>
+          Hortifruti
+        </button>
+        <button onclick="filterCategory('Açougue')" data-cat="Açougue" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-red-400">restaurant</span>
+          Açougue
+        </button>
+        <button onclick="filterCategory('Mercearia')" data-cat="Mercearia" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-amber-400">shopping_basket</span>
+          Mercearia
+        </button>
+        <button onclick="filterCategory('Frios')" data-cat="Frios" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-blue-400">ac_unit</span>
+          Frios & Laticínios
+        </button>
+        <button onclick="filterCategory('Bebidas')" data-cat="Bebidas" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-purple-400">local_bar</span>
+          Bebidas
+        </button>
+        <button onclick="filterCategory('Limpeza')" data-cat="Limpeza" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-cyan-400">cleaning_services</span>
+          Limpeza
+        </button>
+        <button onclick="filterCategory('Padaria')" data-cat="Padaria" class="category-chip shrink-0 px-4 py-2 rounded-xl bg-surface-800 border border-surface-700 text-xs font-bold text-slate-300 hover:border-brand-green transition flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-base text-yellow-500">bakery_dining</span>
+          Padaria
+        </button>
+      </div>
+    </div>
+
+    <!-- Active Filter Notice & Results Count -->
+    <div class="flex items-center justify-between border-b border-surface-700/60 pb-3">
+      <div class="flex items-center gap-2">
+        <h2 id="section-title" class="font-heading font-extrabold text-lg text-white">Catálogo Completo</h2>
+        <span id="results-count-badge" class="px-2.5 py-0.5 rounded-full bg-surface-700 text-xs font-bold text-slate-300">Carregando...</span>
+      </div>
+      <div class="text-xs text-slate-400">
+        Super Mercado Modelo • Cascavel
+      </div>
+    </div>
+
+    <!-- Products Grid -->
+    <div id="products-grid" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-3.5 sm:gap-4">
+      <!-- Dynamically filled by JS -->
+      <div class="col-span-full py-16 flex flex-col items-center justify-center gap-3 text-slate-400">
+        <div class="w-10 h-10 border-4 border-brand-green border-t-transparent rounded-full animate-spin"></div>
+        <p class="text-sm font-semibold">Carregando os melhores produtos do Super Mercado Modelo...</p>
+      </div>
+    </div>
+
+    <!-- Pagination / Load More Button -->
+    <div id="load-more-container" class="py-6 text-center hidden">
+      <button id="load-more-btn" onclick="loadMoreProducts()" class="px-6 py-3 rounded-xl bg-surface-800 hover:bg-surface-700 border border-surface-600 text-white text-xs font-bold shadow-md transition inline-flex items-center gap-2">
+        <span>Carregar mais produtos</span>
+        <span class="material-symbols-outlined text-base">expand_more</span>
+      </button>
+    </div>
+
+  </main>
+
+  <!-- Sticky Floating Cart Bar -->
+  <div id="sticky-cart-bar" class="fixed bottom-0 left-0 right-0 z-40 bg-surface-800/95 backdrop-blur-md border-t border-surface-700 p-3.5 shadow-2xl transition-transform duration-300 translate-y-full">
+    <div class="max-w-7xl mx-auto flex items-center justify-between gap-4">
+      <div class="flex items-center gap-3">
+        <div class="w-11 h-11 rounded-xl bg-brand-orange text-white flex items-center justify-center shadow">
+          <span class="material-symbols-outlined text-2xl">shopping_basket</span>
+        </div>
+        <div>
+          <span id="sticky-cart-qty" class="text-xs font-bold text-slate-300">0 itens na sacola</span>
+          <div class="font-heading font-black text-lg text-white">
+            Total: <span id="sticky-cart-total" class="text-brand-greenLight">R$ 0,00</span>
+          </div>
+        </div>
+      </div>
+      <a href="meu_carrinho.html" class="px-6 py-3 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-heading font-black text-sm tracking-wide shadow-lg shadow-brand-green/30 flex items-center gap-2 transition active:scale-95">
+        <span>Ver Sacola</span>
+        <span class="material-symbols-outlined text-lg">arrow_forward</span>
+      </a>
+    </div>
+  </div>
+
+  <!-- Address Selection Modal -->
+  <div id="address-modal" class="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm hidden flex items-end sm:items-center justify-center p-0 sm:p-4">
+    <div class="w-full max-w-md bg-surface-800 border border-surface-700 rounded-t-3xl sm:rounded-3xl p-6 shadow-2xl space-y-4">
+      <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+        <div class="flex items-center gap-2">
+          <span class="material-symbols-outlined text-brand-orange text-2xl">pin_drop</span>
+          <div>
+            <h3 class="font-heading font-bold text-base text-white">Bairro para Entrega</h3>
+            <p class="text-[11px] text-slate-400">Entregamos em toda a região de Cascavel - CE</p>
+          </div>
+        </div>
+        <button onclick="closeAddressModal()" class="w-8 h-8 rounded-full bg-surface-700 text-slate-400 hover:text-white flex items-center justify-center">
+          <span class="material-symbols-outlined text-lg">close</span>
+        </button>
+      </div>
+
+      <div class="space-y-2">
+        <label class="text-xs font-bold text-slate-300 block">Selecione seu Bairro:</label>
+        <div class="grid grid-cols-2 gap-2">
+          <button onclick="selectBairro('Centro')" class="bairro-btn px-3 py-2 rounded-xl bg-surface-700 hover:bg-brand-green text-xs font-semibold text-white transition text-left">Centro</button>
+          <button onclick="selectBairro('Pitombeiras')" class="bairro-btn px-3 py-2 rounded-xl bg-surface-700 hover:bg-brand-green text-xs font-semibold text-white transition text-left">Pitombeiras</button>
+          <button onclick="selectBairro('Prourb')" class="bairro-btn px-3 py-2 rounded-xl bg-surface-700 hover:bg-brand-green text-xs font-semibold text-white transition text-left">Prourb</button>
+          <button onclick="selectBairro('Bairro Novo')" class="bairro-btn px-3 py-2 rounded-xl bg-surface-700 hover:bg-brand-green text-xs font-semibold text-white transition text-left">Bairro Novo</button>
+          <button onclick="selectBairro('Cascavel Velho')" class="bairro-btn px-3 py-2 rounded-xl bg-surface-700 hover:bg-brand-green text-xs font-semibold text-white transition text-left">Cascavel Velho</button>
+          <button onclick="selectBairro('Coité')" class="bairro-btn px-3 py-2 rounded-xl bg-surface-700 hover:bg-brand-green text-xs font-semibold text-white transition text-left">Coité</button>
+        </div>
+      </div>
+
+      <div class="space-y-1">
+        <label class="text-xs font-bold text-slate-300 block">Rua e Número (Opcional):</label>
+        <input type="text" id="modal-street-input" placeholder="Ex: Av. Chanceler Edson Queiroz, 120" class="w-full h-11 px-3.5 rounded-xl bg-surface-900 border border-surface-600 text-xs text-white focus:outline-none focus:border-brand-green">
+      </div>
+
+      <button onclick="saveSelectedAddress()" class="w-full py-3.5 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs shadow-lg transition">
+        Confirmar Local de Entrega
+      </button>
+    </div>
+  </div>
+
+  <!-- Storefront Client Logic -->
+  <script>
+    let allProducts = [];
+    let currentPage = 1;
+    let totalPages = 1;
+    let currentCategory = null;
+    let searchQuery = '';
+    let searchDebounceTimer = null;
+    let currentSlide = 0;
+    let slideTimer = null;
+
+    // Cart Management in LocalStorage
+    function getCart() {
+      try {
+        const raw = localStorage.getItem('modelo_cart');
+        return raw ? JSON.parse(raw) : [];
+      } catch (e) {
+        return [];
+      }
+    }
+
+    function saveCart(cart) {
+      localStorage.setItem('modelo_cart', JSON.stringify(cart));
+      updateCartUI();
+      renderProducts(allProducts);
+    }
+
+    function addToCart(id, name, price, img, unit) {
+      const cart = getCart();
+      const existing = cart.find(item => String(item.id) === String(id));
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({
+          id: String(id),
+          name: name,
+          price: Number(price),
+          img: img,
+          unit: unit || 'un',
+          quantity: 1
+        });
+      }
+      saveCart(cart);
+    }
+
+    function decrementCartItem(id) {
+      let cart = getCart();
+      const existing = cart.find(item => String(item.id) === String(id));
+      if (existing) {
+        existing.quantity -= 1;
+        if (existing.quantity <= 0) {
+          cart = cart.filter(item => String(item.id) !== String(id));
+        }
+      }
+      saveCart(cart);
+    }
+
+    function updateCartUI() {
+      const cart = getCart();
+      const totalQty = cart.reduce((sum, i) => sum + (Number(i.quantity) || 0), 0);
+      const totalVal = cart.reduce((sum, i) => sum + ((Number(i.price) || 0) * (Number(i.quantity) || 0)), 0);
+
+      // Header badge
+      const headerBadge = document.getElementById('header-cart-badge');
+      if (headerBadge) {
+        if (totalQty > 0) {
+          headerBadge.innerText = totalQty;
+          headerBadge.classList.remove('hidden');
+        } else {
+          headerBadge.classList.add('hidden');
+        }
+      }
+
+      // Sticky Bar
+      const stickyBar = document.getElementById('sticky-cart-bar');
+      const stickyQty = document.getElementById('sticky-cart-qty');
+      const stickyTotal = document.getElementById('sticky-cart-total');
+
+      if (stickyBar && stickyQty && stickyTotal) {
+        if (totalQty > 0) {
+          stickyQty.innerText = `${totalQty} ${totalQty === 1 ? 'item' : 'itens'} na sacola`;
+          stickyTotal.innerText = `R$ ${totalVal.toFixed(2).replace('.', ',')}`;
+          stickyBar.classList.remove('translate-y-full');
+        } else {
+          stickyBar.classList.add('translate-y-full');
+        }
+      }
+    }
+
+    // Carousel Logic
+    function setSlide(index) {
+      currentSlide = index;
+      const track = document.getElementById('carousel-track');
+      if (track) {
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      }
+      const dots = document.querySelectorAll('.carousel-dot');
+      dots.forEach((dot, idx) => {
+        if (idx === currentSlide) {
+          dot.className = 'carousel-dot w-6 h-2 rounded-full bg-brand-orange transition-all';
+        } else {
+          dot.className = 'carousel-dot w-2 h-2 rounded-full bg-white/40 hover:bg-white transition-all';
+        }
+      });
+      resetSlideTimer();
+    }
+
+    function nextSlide() {
+      currentSlide = (currentSlide + 1) % 3;
+      setSlide(currentSlide);
+    }
+
+    function startSlideTimer() {
+      if (!slideTimer) {
+        slideTimer = setInterval(nextSlide, 5000);
+      }
+    }
+
+    function resetSlideTimer() {
+      if (slideTimer) {
+        clearInterval(slideTimer);
+        slideTimer = setInterval(nextSlide, 5000);
+      }
+    }
+
+    // Load Products via dedicated single-tenant /api/products
+    async function fetchProducts(page = 1, append = false) {
+      const grid = document.getElementById('products-grid');
+      const countBadge = document.getElementById('results-count-badge');
+      const loadMoreContainer = document.getElementById('load-more-container');
+
+      const params = new URLSearchParams();
+      params.append('page', String(page));
+      params.append('limit', '30');
+      if (searchQuery) params.append('q', searchQuery);
+      if (currentCategory === 'promo') {
+        params.append('promo', 'true');
+      } else if (currentCategory) {
+        params.append('category', currentCategory);
+      }
+
+      try {
+        const res = await fetch(`/api/products?${params.toString()}`);
+        if (!res.ok) throw new Error('Erro na requisição');
+        
+        const data = await res.json();
+        const totalHeader = res.headers.get('X-Total-Count');
+        const pagesHeader = res.headers.get('X-Total-Pages');
+
+        totalPages = pagesHeader ? parseInt(pagesHeader, 10) : 1;
+        currentPage = page;
+
+        if (append) {
+          allProducts = [...allProducts, ...data];
+        } else {
+          allProducts = data;
+        }
+
+        const totalItems = totalHeader ? totalHeader : allProducts.length;
+        if (countBadge) countBadge.innerText = `${totalItems} produtos`;
+
+        renderProducts(allProducts);
+
+        if (loadMoreContainer) {
+          if (currentPage < totalPages) {
+            loadMoreContainer.classList.remove('hidden');
+          } else {
+            loadMoreContainer.classList.add('hidden');
+          }
+        }
+      } catch (err) {
+        console.error('Falha ao carregar produtos:', err);
+        if (!append && grid) {
+          grid.innerHTML = `
+            <div class="col-span-full py-12 text-center text-slate-400 space-y-3">
+              <span class="material-symbols-outlined text-4xl text-brand-orange">wifi_off</span>
+              <p class="text-sm font-semibold">Não foi possível carregar o catálogo agora.</p>
+              <button onclick="fetchProducts(1)" class="px-4 py-2 rounded-xl bg-brand-green text-white text-xs font-bold">Tentar novamente</button>
+            </div>
+          `;
+        }
+      }
+    }
+
+    function renderProducts(products) {
+      const grid = document.getElementById('products-grid');
+      if (!grid) return;
+
+      if (!products || products.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full py-16 text-center text-slate-400 space-y-2">
+            <span class="material-symbols-outlined text-5xl text-brand-orange">search_off</span>
+            <p class="font-bold text-white">Nenhum produto encontrado</p>
+            <p class="text-xs">Tente buscar por outro termo ou escolha uma categoria diferente.</p>
+            <button onclick="filterCategory(null)" class="mt-2 px-4 py-2 rounded-xl bg-surface-700 text-xs font-bold text-white hover:bg-surface-600">Limpar filtros</button>
+          </div>
+        `;
+        return;
+      }
+
+      const cart = getCart();
+
+      grid.innerHTML = products.map(prod => {
+        const cartItem = cart.find(i => String(i.id) === String(prod.id));
+        const qtyInCart = cartItem ? cartItem.quantity : 0;
+        const priceNum = Number(prod.price) || 0;
+        const oldPriceNum = Number(prod.old_price) || 0;
+        const hasDiscount = oldPriceNum > priceNum;
+        const discountPct = hasDiscount ? Math.round(((oldPriceNum - priceNum) / oldPriceNum) * 100) : 0;
+        const safeName = (prod.name || '').replace(/"/g, '&quot;');
+        const safeImg = prod.img || 'https://via.placeholder.com/200?text=Modelo';
+        const unitLabel = prod.unit || 'un';
+
+        return `
+          <div class="bg-surface-800 rounded-2xl border border-surface-700/70 p-3 sm:p-3.5 flex flex-col justify-between hover:border-brand-green/60 hover:shadow-xl transition-all group relative">
+            
+            <!-- Discount Badge -->
+            ${hasDiscount ? `
+              <div class="absolute top-2.5 left-2.5 bg-brand-orange text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow z-10">
+                ${discountPct}% OFF
+              </div>
+            ` : ''}
+
+            <!-- In-Cart Quantity Indicator -->
+            ${qtyInCart > 0 ? `
+              <div class="absolute top-2.5 right-2.5 bg-brand-green text-white text-[10px] font-black px-2 py-0.5 rounded-lg shadow z-10 flex items-center gap-1">
+                <span class="material-symbols-outlined text-xs">shopping_bag</span>
+                ${qtyInCart}
+              </div>
+            ` : ''}
+
+            <!-- Product Image -->
+            <div class="aspect-square w-full rounded-xl bg-surface-900/80 p-2.5 flex items-center justify-center overflow-hidden border border-surface-700/40">
+              <img src="${safeImg}" alt="${safeName}" class="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300" onerror="this.src='https://via.placeholder.com/200?text=Modelo'">
+            </div>
+
+            <!-- Category & Name -->
+            <div class="mt-2.5 flex-1 flex flex-col">
+              <span class="text-[10px] font-bold text-brand-orange uppercase tracking-wider">${prod.subcategory || prod.category || 'Geral'}</span>
+              <h4 class="font-bold text-xs sm:text-sm text-slate-100 line-clamp-2 mt-0.5 leading-snug group-hover:text-brand-greenLight transition-colors" title="${safeName}">
+                ${prod.name}
+              </h4>
+            </div>
+
+            <!-- Pricing -->
+            <div class="mt-2 pt-2 border-t border-surface-700/50">
+              <div class="flex items-baseline gap-1.5">
+                <span class="font-heading font-extrabold text-base sm:text-lg text-brand-greenLight">
+                  R$ ${priceNum.toFixed(2).replace('.', ',')}
+                </span>
+                ${hasDiscount ? `
+                  <span class="text-[10px] text-slate-500 line-through">
+                    R$ ${oldPriceNum.toFixed(2).replace('.', ',')}
+                  </span>
+                ` : ''}
+              </div>
+              <span class="text-[10px] text-slate-400 font-medium">Por ${unitLabel}</span>
+            </div>
+
+            <!-- Action: Add / Increment Controls -->
+            <div class="mt-2.5">
+              ${qtyInCart > 0 ? `
+                <div class="flex items-center justify-between bg-surface-900 border border-brand-green/60 rounded-xl p-1 h-10">
+                  <button onclick="decrementCartItem('${prod.id}')" class="w-8 h-8 rounded-lg bg-surface-700 hover:bg-surface-600 text-slate-200 flex items-center justify-center transition">
+                    <span class="material-symbols-outlined text-sm">remove</span>
+                  </button>
+                  <span class="text-xs font-extrabold text-brand-greenLight">${qtyInCart} ${unitLabel.includes('kg') ? 'kg' : 'un'}</span>
+                  <button onclick="addToCart('${prod.id}', '${safeName}', ${priceNum}, '${safeImg}', '${unitLabel}')" class="w-8 h-8 rounded-lg bg-brand-green hover:bg-brand-greenHover text-white flex items-center justify-center shadow transition">
+                    <span class="material-symbols-outlined text-sm">add</span>
+                  </button>
+                </div>
+              ` : `
+                <button onclick="addToCart('${prod.id}', '${safeName}', ${priceNum}, '${safeImg}', '${unitLabel}')" class="w-full h-10 rounded-xl bg-brand-green hover:bg-brand-greenHover text-white font-bold text-xs flex items-center justify-center gap-1.5 shadow-md shadow-brand-green/20 transition active:scale-95">
+                  <span class="material-symbols-outlined text-base">add_shopping_cart</span>
+                  <span>Adicionar</span>
+                </button>
+              `}
+            </div>
+
+          </div>
+        `;
+      }).join('');
+    }
+
+    function loadMoreProducts() {
+      if (currentPage < totalPages) {
+        fetchProducts(currentPage + 1, true);
+      }
+    }
+
+    function filterCategory(cat) {
+      currentCategory = cat;
+      const chips = document.querySelectorAll('.category-chip');
+      chips.forEach(chip => {
+        const c = chip.getAttribute('data-cat');
+        if ((!cat && c === 'all') || (cat && c === cat)) {
+          chip.classList.add('active');
+        } else {
+          chip.classList.remove('active');
+        }
+      });
+
+      const clearCatBtn = document.getElementById('clear-category-btn');
+      const sectionTitle = document.getElementById('section-title');
+      if (cat) {
+        clearCatBtn.classList.remove('hidden');
+        sectionTitle.innerText = cat === 'promo' ? '🔥 Ofertas Especiais' : `Departamento: ${cat}`;
+      } else {
+        clearCatBtn.classList.add('hidden');
+        sectionTitle.innerText = 'Catálogo Completo';
+      }
+
+      fetchProducts(1, false);
+    }
+
+    function clearSearch() {
+      const searchInput = document.getElementById('search-input');
+      const clearBtn = document.getElementById('search-clear-btn');
+      searchInput.value = '';
+      searchQuery = '';
+      clearBtn.classList.add('hidden');
+      fetchProducts(1, false);
+    }
+
+    // Address Modal Controls
+    let tempBairro = 'Centro';
+    function openAddressModal() {
+      document.getElementById('address-modal').classList.remove('hidden');
+    }
+    function closeAddressModal() {
+      document.getElementById('address-modal').classList.add('hidden');
+    }
+    function selectBairro(bairro) {
+      tempBairro = bairro;
+      const btns = document.querySelectorAll('.bairro-btn');
+      btns.forEach(btn => {
+        if (btn.innerText.includes(bairro)) {
+          btn.classList.add('bg-brand-green');
+          btn.classList.remove('bg-surface-700');
+        } else {
+          btn.classList.remove('bg-brand-green');
+          btn.classList.add('bg-surface-700');
+        }
+      });
+    }
+    function saveSelectedAddress() {
+      const street = document.getElementById('modal-street-input').value.trim();
+      const addr = street ? `${street}, ${tempBairro}` : `${tempBairro}, Cascavel - CE`;
+      localStorage.setItem('modelo_address', addr);
+      localStorage.setItem('modelo_bairro', tempBairro);
+      document.getElementById('selected-address-text').innerText = addr;
+      closeAddressModal();
+    }
+
+    // Customer Session Check
+    function checkCustomerSession() {
+      try {
+        const userJson = localStorage.getItem('customerUser') || localStorage.getItem('user');
+        const token = localStorage.getItem('customerToken') || localStorage.getItem('token');
+        const greetingName = document.getElementById('user-greeting-name');
+        const loginLink = document.getElementById('login-link-btn');
+
+        if (userJson && token) {
+          const user = JSON.parse(userJson);
+          const firstName = (user.name || user.fullname || 'Cliente').split(' ')[0];
+          if (greetingName) greetingName.innerText = `Olá, ${firstName}`;
+          if (loginLink) loginLink.href = 'index.html#conta';
+        }
+      } catch (e) {}
+
+      const savedAddr = localStorage.getItem('modelo_address');
+      if (savedAddr) {
+        const el = document.getElementById('selected-address-text');
+        if (el) el.innerText = savedAddr;
+      }
+    }
+
+    // Initializer
+    document.addEventListener('DOMContentLoaded', () => {
+      checkCustomerSession();
+      updateCartUI();
+      startSlideTimer();
+      fetchProducts(1, false);
+
+      const searchInput = document.getElementById('search-input');
+      const clearBtn = document.getElementById('search-clear-btn');
+      if (searchInput) {
+        searchInput.addEventListener('input', (e) => {
+          searchQuery = e.target.value.trim();
+          if (searchQuery.length > 0) {
+            clearBtn.classList.remove('hidden');
+          } else {
+            clearBtn.classList.add('hidden');
+          }
+          clearTimeout(searchDebounceTimer);
+          searchDebounceTimer = setTimeout(() => {
+            fetchProducts(1, false);
+          }, 300);
+        });
+      }
+    });
+  </script>
+</body>
+</html>
