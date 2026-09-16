@@ -310,10 +310,10 @@
         const res = await fetch('/api/orders', {
           headers: { 'Authorization': `Bearer ${token}` }
         });
-        if (res.ok) {
-          const orders = await res.json();
-          renderDashboardOrders(orders);
-        }
+        if (res.status === 401 || res.status === 403) return logoutAdmin();
+        if (!res.ok) throw new Error('Não foi possível carregar os pedidos.');
+        const orders = await res.json();
+        renderDashboardOrders(orders);
 
         // Fetch the complete active catalog so the stock KPI reflects real data.
         const prodRes = await fetch('/api/products?limit=100');
@@ -329,6 +329,7 @@
         }
       } catch (e) {
         console.error('Erro ao carregar métricas:', e);
+        document.getElementById('recent-orders-tbody').innerHTML = '<tr><td colspan="6" class="p-6 text-center text-red-700">Falha ao carregar pedidos. Recarregue a página.</td></tr>';
       }
     }
 
