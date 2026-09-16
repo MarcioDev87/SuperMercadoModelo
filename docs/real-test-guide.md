@@ -2,10 +2,10 @@
 
 ## Preparação
 
-1. Confirme que o computador e o celular estão na mesma rede Wi-Fi.
-2. Inicie o ambiente com `docker compose up -d --build`.
-3. Confirme `docker compose ps` e abra `http://IP_DO_COMPUTADOR:3052/health` no celular.
-4. Instale o APK debug disponível em `dist/`.
+1. No celular, abra `https://modelo.flawlessdev.com.br/health` e confirme a resposta `ok`.
+2. Instale o [APK Cliente](https://modelo.flawlessdev.com.br/downloads/SuperMercadoModelo-Cliente.apk).
+3. Instale o [APK Gestor](https://modelo.flawlessdev.com.br/downloads/SuperMercadoModelo-Gestor.apk) se for testar os dois perfis. Eles podem coexistir no mesmo aparelho.
+4. Use dados de teste controlados pela equipe e identifique o pedido como teste antes de avançar pelo fluxo operacional.
 
 ## Cliente final
 
@@ -34,4 +34,4 @@
 - Estoque foi baixado na venda e restaurado uma vez no cancelamento.
 - Nenhum erro apareceu no navegador, nos logs do contêiner ou na tela do aplicativo.
 
-Para testes externos à rede local, publique primeiro a aplicação em uma VPS com domínio e HTTPS e gere um novo APK para essa URL.
+Os APKs acima apontam para o servidor público e são versões debug para homologação. Para testes locais sem a VPS, gere outros APKs com a URL da rede local conforme o `README.md`.
